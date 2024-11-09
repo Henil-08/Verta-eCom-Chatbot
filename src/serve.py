@@ -49,10 +49,10 @@ langfuse_handler = CallbackHandler()
 
 ## Postgres DB
 credentials = {
-    'INSTANCE_CONNECTION_NAME': os.getenv("INSTANCE_CONNECTION_NAME"),
-    'DB_USER': os.getenv("DB_USER"),
-    'DB_PASS': os.getenv("DB_PASS"),
-    'DB_NAME': os.getenv("DB_NAME")
+    'INSTANCE_CONNECTION_NAME': str(os.getenv("INSTANCE_CONNECTION_NAME")),
+    'DB_USER': str(os.getenv("DB_USER")),
+    'DB_PASS': str(os.getenv("DB_PASS")),
+    'DB_NAME': str(os.getenv("DB_NAME"))
 }
 
 app = FastAPI()
