@@ -7,5 +7,6 @@ COPY . /verta-chatbot
 RUN pip install -r requirements.txt
 
 ENV HOST 0.0.0.0
+ENV PORT 80
 
 CMD ["python3", "src/serve.py"]
