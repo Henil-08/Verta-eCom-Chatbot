@@ -6,4 +6,6 @@ WORKDIR /verta-chatbot
 COPY . /verta-chatbot
 RUN pip install -r requirements.txt
 
+ENV HOST 0.0.0.0
+
 CMD ["python3", "src/serve.py"]
