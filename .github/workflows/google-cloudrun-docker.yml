@@ -53,11 +53,11 @@ jobs:
             LANGFUSE_SECRET_KEY= ${{ vars.LANGFUSE_SECRET_KEY }}
             LANGFUSE_PUBLIC_KEY= ${{ vars.LANGFUSE_PUBLIC_KEY }}
             LANGFUSE_HOST= https://us.cloud.langfuse.com
-            DB_USER="postgres"
-            DB_PASS="postgres"
-            DB_NAME="postgres"
-            INSTANCE_CONNECTION_NAME="ecom-chat-437005:us-east4:postgres"
-            GCS_BUCKET_NAME="ecom-chat"
+            DB_USER=postgres
+            DB_PASS=postgres
+            DB_NAME=postgres
+            INSTANCE_CONNECTION_NAME=ecom-chat-437005:us-east4:postgres
+            GCS_BUCKET_NAME=ecom-chat
 
       - name: 'Show output'
         run: echo ${{ steps.deploy.outputs.url }}
