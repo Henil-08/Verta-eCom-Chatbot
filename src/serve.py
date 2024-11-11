@@ -87,7 +87,7 @@ async def log_requests(request: Request, call_next):
     # Start time
     start_time = datetime.utcnow()
     response = await call_next(request)
-    
+
     # End time
     process_time = (datetime.utcnow() - start_time).total_seconds()
     
@@ -217,6 +217,7 @@ async def invoke(user_input: UserInput):
     config = {"configurable": {"thread_id": f"{user_input.user_id}"}}
 
     if user_input.log_langfuse:
+        config.update({"configurable": {"thread_id": f"{langfuse_handler.session_id}"}})
         config.update({"callbacks": [langfuse_handler]})
     try:
         response = agent.invoke({
