@@ -17,9 +17,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from langchain_community.vectorstores import FAISS
 from langgraph.graph.state import CompiledStateGraph
 from langchain_huggingface import HuggingFaceEmbeddings
-from fastapi import FastAPI, HTTPException, status, Query, Request
+from langfuse.decorators import langfuse_context, observe
 from fastapi.responses import StreamingResponse, JSONResponse
 from langchain_community.document_loaders import DataFrameLoader
+from fastapi import FastAPI, HTTPException, status, Query, Request
 
 # Configure logger
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -46,7 +47,6 @@ os.environ['GROQ_API_KEY']=os.getenv("GROQ_API_KEY")
 os.environ['LANGFUSE_PUBLIC_KEY']=os.getenv("LANGFUSE_PUBLIC_KEY")
 os.environ['LANGFUSE_SECRET_KEY']=os.getenv("LANGFUSE_SECRET_KEY")
 os.environ['LANGFUSE_HOST']=os.getenv("LANGFUSE_HOST")
-langfuse_handler = CallbackHandler()
 
 ## Postgres DB
 credentials = {
@@ -214,10 +214,13 @@ async def invoke(user_input: UserInput):
         return JSONResponse(content={"status": "Meta-Data not initialized"}, status_code=400)
 
     agent: CompiledStateGraph = create_graph()
-    config = {"configurable": {"thread_id": f"{user_input.user_id}"}}
+    config = {"configurable": {"thread_id": f"{cache_key}"}}
 
     if user_input.log_langfuse:
-        config.update({"configurable": {"thread_id": f"{langfuse_handler.session_id}"}})
+        langfuse_handler = CallbackHandler(
+            user_id=f"{user_input.user_id}",
+            session_id=f"{cache_key}"
+        )
         config.update({"callbacks": [langfuse_handler]})
     try:
         response = agent.invoke({
@@ -270,6 +273,10 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
     agent: CompiledStateGraph = create_graph()
     config = {"configurable": {"thread_id": f"{user_input.user_id}"}}
     if user_input.log_langfuse:
+        langfuse_handler = CallbackHandler(
+            user_id=f"{user_input.user_id}",
+            session_id=f"{cache_key}"
+        )
         config.update({"callbacks": [langfuse_handler]})
     if user_input.stream_tokens == 0:
         stream_tokens = False
