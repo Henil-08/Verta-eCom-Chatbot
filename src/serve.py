@@ -293,5 +293,5 @@ async def stream_agent(user_input: UserInput) -> StreamingResponse:
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=80)
+    uvicorn.run(app, host=str(os.getenv("HOST")), port=int(os.getenv("PORT")))
 
