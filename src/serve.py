@@ -285,8 +285,8 @@ async def invoke(user_input: UserInput):
         logger.info(f"Cache initialized for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
 
     # Ensure paths exist
-    retriever = faiss_dir / cache_key
-    meta_df = meta_dir / f"{cache_key}.csv"
+    retriever = f"{faiss_dir}/{cache_key}"
+    meta_df = f"{meta_dir}/{cache_key}.csv"
 
     if not os.path.exists(retriever):
         logger.error(f"Retriever not initialized for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
@@ -346,8 +346,8 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
         logger.info(f"Vector store and metadata initialized and cached for {cache_key}")
 
     # Ensure paths exist
-    retriever = faiss_dir / cache_key
-    meta_df = meta_dir / f"{cache_key}.csv"
+    retriever = f"{faiss_dir}/{cache_key}"
+    meta_df = f"{meta_dir}/{cache_key}.csv"
 
     if not os.path.exists(retriever):
         logger.error(f"Retriever not initialized for cache key: {cache_key}")
