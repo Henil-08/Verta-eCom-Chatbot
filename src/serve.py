@@ -1,6 +1,8 @@
 import os
 import json
 import shutil
+import random
+import string
 import uvicorn
 import pandas as pd
 from typing import Any
@@ -15,7 +17,7 @@ from langchain_community.vectorstores import FAISS
 from langgraph.graph.state import CompiledStateGraph
 from langchain_huggingface import HuggingFaceEmbeddings
 from fastapi import FastAPI, HTTPException, status, Query
-
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
 from langchain_community.document_loaders import DataFrameLoader
 import logging
@@ -56,6 +58,14 @@ credentials = {
 }
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 vector_store_cache = []
 
@@ -146,8 +156,24 @@ async def clear_retriever(request: clearCache):
         raise HTTPException(status_code=400, detail="Retriever not found")
 
 
+def generate_random_id(length=10):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+
 @app.post("/dev-invoke")
 async def invoke(user_input: UserInput):
+    # Set default values for configuration keys required by Checkpointer
+    user_input.config.setdefault("thread_id", generate_random_id())
+    user_input.config.setdefault("checkpoint_ns", generate_random_id())
+    user_input.config.setdefault("checkpoint_id", generate_random_id())
+
+
+    logger.info("Configuration after setting defaults: %s", user_input.config)
+
+
+    logger.info("Received request to invoke agent")
+    logger.info("Received user input: %s", user_input.dict())
+    logger.info("Configuration for invoke: %s", user_input.config)
+
     """
     Invoke the agent with user input to retrieve a final response.
     """
@@ -284,3 +310,5 @@ async def stream_agent(user_input: UserInput) -> StreamingResponse:
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=80)
+
+#export GOOGLE_APPLICATION_CREDENTIALS="/Users/bharathgajula/Desktop/eCom-Chatbot/big_credentials.json"
