@@ -1,4 +1,5 @@
 import os
+import uuid
 import json
 import shutil
 import logging
@@ -7,6 +8,7 @@ import pandas as pd
 from typing import Any
 from pathlib import Path
 from sqlalchemy import text
+from langfuse import Langfuse
 from datetime import datetime
 from pydantic import BaseModel
 from graph import create_graph
@@ -17,7 +19,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from langchain_community.vectorstores import FAISS
 from langgraph.graph.state import CompiledStateGraph
 from langchain_huggingface import HuggingFaceEmbeddings
-from langfuse.decorators import langfuse_context, observe
 from fastapi.responses import StreamingResponse, JSONResponse
 from langchain_community.document_loaders import DataFrameLoader
 from fastapi import FastAPI, HTTPException, status, Query, Request
@@ -70,6 +71,8 @@ vector_store_cache = []
 
 engine = db.connect_with_db(credentials)
 
+langfuse = Langfuse()
+
 class UserInput(BaseModel):
     user_input: str
     parent_asin: str
@@ -80,6 +83,13 @@ class UserInput(BaseModel):
 class clearCache(BaseModel):
     user_id: str
     parent_asin: str
+
+
+class scoreTrace(BaseModel):
+    run_id: str
+    user_id: str
+    parent_asin: str
+    value: bool
 
 
 @app.middleware("http")
@@ -189,6 +199,28 @@ async def clear_retriever(request: clearCache):
         raise HTTPException(status_code=400, detail="Retriever not found")
     
 
+@app.post("/score")
+async def annotate(score_trace: scoreTrace):
+    trace_id = score_trace.run_id
+    user_id = score_trace.user_id
+    asin = score_trace.parent_asin
+    id = str(uuid.uuid4()) + f"-{user_id}-{asin}"
+    value = score_trace.value
+    try:
+        langfuse.score(
+            id=id,
+            trace_id=trace_id,
+            name="user-feedback",
+            value=value,
+            data_type="BOOLEAN" 
+        )
+        logger.info(f"Feedback Successful, 'trace_id': {trace_id}, 'id': {id}")
+        return JSONResponse(content={"status": "Feedback Successful", "trace_id": trace_id, "id": id}, status_code=200)
+    except Exception as e:
+        logger.error(f"Error Scoring Trace: {trace_id} - {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/dev-invoke")
 async def invoke(user_input: UserInput):
     cache_key = f"{user_input.user_id}-{user_input.parent_asin}"
@@ -203,8 +235,8 @@ async def invoke(user_input: UserInput):
         logger.info(f"Cache initialized for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
 
     # Ensure paths exist
-    retriever = f"{faiss_dir}/{cache_key}"
-    meta_df = f"{meta_dir}/{cache_key}.csv"
+    retriever = faiss_dir / cache_key
+    meta_df = meta_dir / f"{cache_key}.csv"
 
     if not os.path.exists(retriever):
         logger.error(f"Retriever not initialized for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
@@ -217,11 +249,12 @@ async def invoke(user_input: UserInput):
     config = {"configurable": {"thread_id": f"{cache_key}"}}
 
     if user_input.log_langfuse:
+        run_id = str(uuid.uuid4())
         langfuse_handler = CallbackHandler(
             user_id=f"{user_input.user_id}",
             session_id=f"{cache_key}"
         )
-        config.update({"callbacks": [langfuse_handler]})
+        config.update({"callbacks": [langfuse_handler], "run_id": run_id})
     try:
         response = agent.invoke({
             "question": user_input.user_input, 
@@ -231,6 +264,7 @@ async def invoke(user_input: UserInput):
         logger.info(f"Agent response generated for User ID: {user_input.user_id}")
 
         output = {
+            'run_id': run_id,
             'question': response['question'],
             'answer': response['answer'].content,
             'followup_questions': response['followup_questions']
@@ -260,8 +294,9 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
         vector_store_cache.append(cache_key)
         logger.info(f"Vector store and metadata initialized and cached for {cache_key}")
 
-    retriever = f"{faiss_dir}/{cache_key}"
-    meta_df = f"{meta_dir}/{cache_key}.csv"
+    # Ensure paths exist
+    retriever = faiss_dir / cache_key
+    meta_df = meta_dir / f"{cache_key}.csv"
 
     if not os.path.exists(retriever):
         logger.error(f"Retriever not initialized for cache key: {cache_key}")
@@ -273,11 +308,12 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
     agent: CompiledStateGraph = create_graph()
     config = {"configurable": {"thread_id": f"{user_input.user_id}"}}
     if user_input.log_langfuse:
+        run_id = str(uuid.uuid4())
         langfuse_handler = CallbackHandler(
             user_id=f"{user_input.user_id}",
             session_id=f"{cache_key}"
         )
-        config.update({"callbacks": [langfuse_handler]})
+        config.update({"callbacks": [langfuse_handler], "run_id": run_id})
     if user_input.stream_tokens == 0:
         stream_tokens = False
 
@@ -315,6 +351,7 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
             answer = event["data"]["output"]["answer"].content
             followup_questions = event["data"]["output"]["followup_questions"]
             output = {
+                'run_id': run_id,
                 "question": user_input.user_input,
                 "answer": answer,
                 "followup_questions": followup_questions
