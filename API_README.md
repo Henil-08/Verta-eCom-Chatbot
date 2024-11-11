@@ -60,8 +60,6 @@ http://localhost:80
 **Response:**
 
 ```json
-json
-Copy code
 {
   "status": "cache cleared"
 }
@@ -72,7 +70,47 @@ Returns **400 Bad Request** if the specified retriever does not exist.
 
 ---
 
-### 3. `/dev-invoke`
+### 3. `/score`
+
+**Method:** `POST`
+
+**Description:** Adds User-Feedback for a specified product (ASIN) and user ID.
+
+**Request Body:**
+
+```json
+{
+    "run_id": "string",
+    "parent_asin": "string",
+    "user_id": "string",
+    "value": true
+}
+
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| run_id | string | The message ID for the response from LLM. |
+| parent_asin | string | The product's Parent ASIN ID. |
+| user_id | string | The unique identifier for the user. |
+| value | boolean | User Feedback as 0 or 1. |
+
+**Response:**
+
+```json
+{ 
+  "status": "Feedback Successful", 
+  "trace_id": "trace_id", 
+  "id": "id"
+}
+
+```
+
+Returns **500 Bad Request** if failed to add user-feedback
+
+---
+
+### 4. `/dev-invoke`
 
 **Method:** `POST`
 
@@ -98,7 +136,6 @@ Returns **400 Bad Request** if the specified retriever does not exist.
 | Field          | Type   | Description                                                        |
 |----------------|--------|--------------------------------------------------------------------|
 | user_input     | string | The question or query you want the agent to respond to.            |
-| config         | dict   | Configuration for agent callbacks and threading.                   |
 | parent_asin    | string | The Parent Asin Id of the product querying.                        |  
 | user_id        | string | The User-ID of the user logged in.                                 |
 | log_langfuse   | bool   | Whether to log responses and interactions to Langfuse.             |
@@ -118,15 +155,16 @@ Returns **400 Bad Request** if the specified retriever does not exist.
 }
 ```
 
-| Field             | Type   | Description                                                            |
-|-------------------|--------|------------------------------------------------------------------------|
+| Field             | Type   | Description                                                             |
+|-------------------|--------|-------------------------------------------------------------------------|
+| run_id            | string | The Id for the response.                                                |
 | question          | string | The user query or question submitted.                                   |
 | answer            | string | The agent's full response.                                              |
 | followup_questions| array  | Suggested follow-up questions based on the answer.                      |
 
 ---
 
-### 4. `/dev-stream`
+### 5. `/dev-stream`
 
 **Method:** `POST`
 
@@ -152,7 +190,6 @@ Returns **400 Bad Request** if the specified retriever does not exist.
 | Field          | Type   | Description                                                        |
 |----------------|--------|--------------------------------------------------------------------|
 | user_input     | string | The question or query you want the agent to respond to.            |
-| config         | dict   | Configuration for agent callbacks and threading.                   |
 | parent_asin    | string | The Parent Asin Id of the product querying.                        |  
 | user_id        | string | The User-ID of the user logged in.                                 |
 | log_langfuse   | bool   | Whether to log responses and interactions to Langfuse.             |
@@ -168,6 +205,7 @@ Example:
 data: {"type": "token", "content": "Hello "}
 data: {"type": "token", "content": "World"}
 data: {"type": "message", "content": {
+    "run_id" : "string",
     "question": "string",
     "answer": "string",
     "followup_questions": [
@@ -205,13 +243,6 @@ curl -X POST "http://localhost:80/stream" -H "Content-Type: application/json" -d
   "stream_tokens": 1
 }' --no-buffer
 ```
-
----
-
-### Error Handling
-
-- **500 Internal Server Error:** When the agent encounters an issue processing the input.
-- **400 Bad Request:** When the input is improperly formatted.
 
 ---
 

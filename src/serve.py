@@ -3,16 +3,18 @@ import uuid
 import json
 import shutil
 import logging
+import asyncio
 import uvicorn
 import pandas as pd
 from typing import Any
 from pathlib import Path
 from sqlalchemy import text
 from langfuse import Langfuse
-from datetime import datetime
 from pydantic import BaseModel
 from graph import create_graph
 from utils import database as db
+from datetime import datetime, timedelta
+from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
 from langfuse.callback import CallbackHandler
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,7 +23,8 @@ from langgraph.graph.state import CompiledStateGraph
 from langchain_huggingface import HuggingFaceEmbeddings
 from fastapi.responses import StreamingResponse, JSONResponse
 from langchain_community.document_loaders import DataFrameLoader
-from fastapi import FastAPI, HTTPException, status, Query, Request
+from fastapi import FastAPI, HTTPException, status, Query, Request, BackgroundTasks
+
 
 # Configure logger
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -67,10 +70,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-vector_store_cache = []
+vector_store_cache = [] # a list to track the cache
+cache_creation_times = {} # a dictionary to track cache creation times
 
 engine = db.connect_with_db(credentials)
-
 langfuse = Langfuse()
 
 class UserInput(BaseModel):
@@ -113,6 +116,45 @@ async def log_requests(request: Request, call_next):
     # Send log to Google Cloud Logging or stdout for Cloud Run to capture
     logger.info(json.dumps(log_data))
     return response
+
+
+# Define a background task to delete cache files older than 1 hour
+async def clear_outdated_cache():
+    while True:
+        current_time = datetime.utcnow()
+        for cache_key, creation_time in list(cache_creation_times.items()):
+            if (current_time - creation_time) > timedelta(hour=1):
+                try:
+                    # Remove cache files
+                    if os.path.exists(f"{faiss_dir}/{cache_key}") and os.path.isdir(f"{faiss_dir}/{cache_key}"):
+                        shutil.rmtree(f"{faiss_dir}/{cache_key}")
+                    if os.path.exists(f"{meta_dir}/{cache_key}.csv") and os.path.isfile(f"{meta_dir}/{cache_key}.csv"):
+                        os.remove(f"{meta_dir}/{cache_key}.csv")
+
+                    # Remove from cache tracking
+                    vector_store_cache.remove(cache_key)
+                    del cache_creation_times[cache_key]
+
+                    logger.info(f"Cache automatically cleared for {cache_key}")
+                except Exception as e:
+                    logger.error(f"Error clearing cache for {cache_key}: {e}")
+
+        # Wait an hour before the next check
+        await asyncio.sleep(3600)
+
+
+# Use lifespan to manage startup and shutdown events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup tasks
+    cache_task = asyncio.create_task(clear_outdated_cache())
+    try:
+        yield
+    finally:
+        cache_task.cancel()
+        await cache_task  # Wait for the task to be cancelled
+
+app.router.lifespan_context = lifespan
 
 
 async def load_product_data(asin: str):
@@ -159,6 +201,11 @@ def create_vector_store(review_df):
     return vectordb
 
 
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Verta FastAPI app!"}
+
+
 @app.get("/initialize")
 async def initialize(asin: str = Query(...), user_id: int = Query(...)):
     logger.info(f"Received request to initialize retriever for ASIN: {asin} and User ID: {user_id}")
@@ -171,6 +218,8 @@ async def initialize(asin: str = Query(...), user_id: int = Query(...)):
         vector_db.save_local(f"{faiss_dir}/{cache_key}")
         meta_df.to_csv(f"{meta_dir}/{cache_key}.csv", index=False)
         vector_store_cache.append(cache_key)
+        cache_creation_times[cache_key] = datetime.utcnow()
+
         logger.info(f"Retriever initialized and cached for ASIN: {asin} and User ID: {user_id}")
     else:
         logger.info(f"Retriever for ASIN: {asin} and User ID: {user_id} already cached")
@@ -178,25 +227,25 @@ async def initialize(asin: str = Query(...), user_id: int = Query(...)):
     return JSONResponse(content={"status": "retriever initialized", "asin": asin, "user_id": user_id}, status_code=200)
 
 
-@app.post("/clear-cache")
-async def clear_retriever(request: clearCache):
-    user_id = request.user_id
-    asin = request.parent_asin
-    cache_key = f"{user_id}-{asin}"
+# @app.post("/clear-cache")
+# async def clear_retriever(request: clearCache):
+#     user_id = request.user_id
+#     asin = request.parent_asin
+#     cache_key = f"{user_id}-{asin}"
 
-    logger.info(f"Received request to clear cache for ASIN: {asin} and User ID: {user_id}")
+#     logger.info(f"Received request to clear cache for ASIN: {asin} and User ID: {user_id}")
 
-    if cache_key in vector_store_cache:
-        if os.path.exists(f"{faiss_dir}/{cache_key}") and os.path.isdir(f"{faiss_dir}/{cache_key}"):
-            shutil.rmtree(f"{faiss_dir}/{cache_key}")
-        if os.path.exists(f"{meta_dir}/{cache_key}.csv") and os.path.isfile(f"{meta_dir}/{cache_key}.csv"):
-            os.remove(f"{meta_dir}/{cache_key}.csv")
-        vector_store_cache.remove(cache_key)
-        logger.info(f"Cache cleared for ASIN: {asin} and User ID: {user_id}")
-        return {"status": "cache cleared"}
-    else:
-        logger.warning(f"Cache for ASIN: {asin} and User ID: {user_id} not found")
-        raise HTTPException(status_code=400, detail="Retriever not found")
+#     if cache_key in vector_store_cache:
+#         if os.path.exists(f"{faiss_dir}/{cache_key}") and os.path.isdir(f"{faiss_dir}/{cache_key}"):
+#             shutil.rmtree(f"{faiss_dir}/{cache_key}")
+#         if os.path.exists(f"{meta_dir}/{cache_key}.csv") and os.path.isfile(f"{meta_dir}/{cache_key}.csv"):
+#             os.remove(f"{meta_dir}/{cache_key}.csv")
+#         vector_store_cache.remove(cache_key)
+#         logger.info(f"Cache cleared for ASIN: {asin} and User ID: {user_id}")
+#         return {"status": "cache cleared"}
+#     else:
+#         logger.warning(f"Cache for ASIN: {asin} and User ID: {user_id} not found")
+#         raise HTTPException(status_code=400, detail="Retriever not found")
     
 
 @app.post("/score")
@@ -232,6 +281,7 @@ async def invoke(user_input: UserInput):
         vector_db.save_local(f"{faiss_dir}/{cache_key}")
         meta_df.to_csv(f"{meta_dir}/{cache_key}.csv", index=False)
         vector_store_cache.append(cache_key)
+        cache_creation_times[cache_key] = datetime.utcnow()
         logger.info(f"Cache initialized for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
 
     # Ensure paths exist
@@ -292,6 +342,7 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
         vector_db.save_local(f"{faiss_dir}/{cache_key}")
         meta_df.to_csv(f"{meta_dir}/{cache_key}.csv", index=False)
         vector_store_cache.append(cache_key)
+        cache_creation_times[cache_key] = datetime.utcnow()
         logger.info(f"Vector store and metadata initialized and cached for {cache_key}")
 
     # Ensure paths exist
