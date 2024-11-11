@@ -1,8 +1,6 @@
 import os
 import json
 import shutil
-import random
-import string
 import uvicorn
 import pandas as pd
 from typing import Any
@@ -73,7 +71,6 @@ engine = db.connect_with_db(credentials)
 
 class UserInput(BaseModel):
     user_input: str
-    config: dict
     parent_asin: str
     user_id: str
     log_langfuse: bool
@@ -155,29 +152,13 @@ async def clear_retriever(request: clearCache):
     else:
         raise HTTPException(status_code=400, detail="Retriever not found")
 
-
-def generate_random_id(length=10):
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
-
 @app.post("/dev-invoke")
 async def invoke(user_input: UserInput):
-    # Set default values for configuration keys required by Checkpointer
-    user_input.config.setdefault("thread_id", generate_random_id())
-    user_input.config.setdefault("checkpoint_ns", generate_random_id())
-    user_input.config.setdefault("checkpoint_id", generate_random_id())
-
-
-    logger.info("Configuration after setting defaults: %s", user_input.config)
-
-
-    logger.info("Received request to invoke agent")
-    logger.info("Received user input: %s", user_input.dict())
-    logger.info("Configuration for invoke: %s", user_input.config)
-
     """
     Invoke the agent with user input to retrieve a final response.
     """
     cache_key = f"{user_input.user_id}-{user_input.parent_asin}"
+    logger.info("Received request to invoke agent")
 
     if cache_key not in vector_store_cache:
         review_df, meta_df = await load_product_data(user_input.parent_asin)
@@ -195,14 +176,16 @@ async def invoke(user_input: UserInput):
         return JSONResponse(content={"status": "Meta-Data not initialized"}, status_code=400)
     
     agent: CompiledStateGraph = create_graph()
+    config = {"configurable": {"thread_id": f"{user_input.user_id}"}}
+
     if user_input.log_langfuse:
-        user_input.config.update({"callbacks": [langfuse_handler]})
+        config.update({"callbacks": [langfuse_handler]})
     try:
         response = agent.invoke({
                                 "question": user_input.user_input, 
                                 "meta_data": meta_df,
                                 "retriever": retriever
-                            }, config=user_input.config)
+                            }, config=config)
 
         output = {
             'question': response['question'],
@@ -238,8 +221,9 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
         yield JSONResponse(content={"status": "Meta-Data not initialized"}, status_code=400)
     
     agent: CompiledStateGraph = create_graph()
+    config = {"configurable": {"thread_id": f"{user_input.user_id}"}}
     if user_input.log_langfuse:
-        user_input.config.update({"callbacks": [langfuse_handler]})
+        config.update({"callbacks": [langfuse_handler]})
     if user_input.stream_tokens == 0:
         stream_tokens = False
 
@@ -247,7 +231,7 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
     async for event in agent.astream_events({"question": user_input.user_input, 
                                             "meta_data": meta_df,
                                             "retriever": retriever
-                                        }, version="v2", config=user_input.config):
+                                        }, version="v2", config=config):
         if not event:
             continue
              
@@ -311,4 +295,3 @@ async def stream_agent(user_input: UserInput) -> StreamingResponse:
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=80)
 
-#export GOOGLE_APPLICATION_CREDENTIALS="/Users/bharathgajula/Desktop/eCom-Chatbot/big_credentials.json"

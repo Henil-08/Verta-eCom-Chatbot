@@ -6,6 +6,6 @@ cache
 verta
 cache
 artifacts
-big_credentials.json
+**.json
 ecom
 **/__pycache__/
