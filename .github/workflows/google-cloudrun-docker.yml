@@ -45,19 +45,16 @@ jobs:
           region: '${{ env.REGION }}'
           image: 'us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}'
           env_vars: |
-            LANGCHAIN_API_KEY= ${{ vars.LANGCHAIN_API_KEY }}
             OPENAI_API_KEY= ${{ vars.OPENAI_API_KEY }}
-            LANGCHAIN_PROJECT = "eCommerce Chatbot"
             HF_TOKEN = ${{ vars.HF_TOKEN }}
             GROQ_API_KEY = ${{ vars.GROQ_API_KEY }}
-            LANGFUSE_SECRET_KEY= ${{ vars.LANGFUSE_SECRET_KEY }}
-            LANGFUSE_PUBLIC_KEY= ${{ vars.LANGFUSE_PUBLIC_KEY }}
-            LANGFUSE_HOST= https://us.cloud.langfuse.com
-            DB_USER=postgres
-            DB_PASS=postgres
-            DB_NAME=postgres
-            INSTANCE_CONNECTION_NAME=ecom-chat-437005:us-east4:postgres
-            GCS_BUCKET_NAME=ecom-chat
+            LANGFUSE_SECRET_KEY = ${{ vars.LANGFUSE_SECRET_KEY }}
+            LANGFUSE_PUBLIC_KEY = ${{ vars.LANGFUSE_PUBLIC_KEY }}
+            LANGFUSE_HOST = ${{ vars.LANGFUSE_HOST }}
+            DB_USER = ${{ vars.DB_USER }}
+            DB_PASS = ${{ vars.DB_PASS }}
+            DB_NAME = ${{ vars.DB_NAME }}
+            INSTANCE_CONNECTION_NAME = ${{ vars.INSTANCE_CONNECTION_NAME }}
 
       - name: 'Show output'
         run: echo ${{ steps.deploy.outputs.url }}

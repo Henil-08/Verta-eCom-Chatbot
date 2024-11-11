@@ -1,27 +1,28 @@
 import os
 import json
 import shutil
+import logging
 import uvicorn
 import pandas as pd
 from typing import Any
 from pathlib import Path
 from sqlalchemy import text
+from datetime import datetime
 from pydantic import BaseModel
 from graph import create_graph
 from utils import database as db
 from collections.abc import AsyncGenerator
 from langfuse.callback import CallbackHandler
+from fastapi.middleware.cors import CORSMiddleware
 from langchain_community.vectorstores import FAISS
 from langgraph.graph.state import CompiledStateGraph
 from langchain_huggingface import HuggingFaceEmbeddings
-from fastapi import FastAPI, HTTPException, status, Query
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, HTTPException, status, Query, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from langchain_community.document_loaders import DataFrameLoader
-import logging
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logger
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 from dotenv import load_dotenv
@@ -81,9 +82,35 @@ class clearCache(BaseModel):
     parent_asin: str
 
 
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    # Start time
+    start_time = datetime.utcnow()
+    response = await call_next(request)
+    
+    # End time
+    process_time = (datetime.utcnow() - start_time).total_seconds()
+    
+    log_data = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "method": request.method,
+        "url": str(request.url),
+        "status_code": response.status_code,
+        "process_time": process_time,
+        "client_ip": request.client.host
+    }
+    
+    # Send log to Google Cloud Logging or stdout for Cloud Run to capture
+    logger.info(json.dumps(log_data))
+    return response
+
+
 async def load_product_data(asin: str):
     with engine.begin() as connection:
         try:
+            # Log start of data fetching
+            logger.info(f"Loading product data for ASIN: {asin}")
+
             # Fetch reviews
             review_query = text(f"""
                 SELECT parent_asin, asin, helpful_vote, timestamp, verified_purchase, title, text
@@ -92,6 +119,7 @@ async def load_product_data(asin: str):
             """)
             review_result = connection.execute(review_query)
             review_df = pd.DataFrame(review_result.fetchall(), columns=review_result.keys())
+            logger.info("Fetched review data")
 
             # Fetch metadata
             meta_query = text(f"""
@@ -101,21 +129,23 @@ async def load_product_data(asin: str):
             """)
             meta_result = connection.execute(meta_query)
             meta_df = pd.DataFrame(meta_result.fetchall(), columns=meta_result.keys())
-            
+            logger.info("Fetched metadata")
+
         except Exception as e:
+            logger.error(f"Error loading data for ASIN: {asin} - {e}")
             raise HTTPException(status_code=500, detail="Error loading data")
 
     return review_df, meta_df
 
 
 def create_vector_store(review_df):
-    # Create document loader
+    logger.info("Creating vector store from review data")
     loader = DataFrameLoader(review_df)
     review_docs = loader.load()
 
-    # Initialize embeddings and vector store
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     vectordb = FAISS.from_documents(documents=review_docs, embedding=embeddings)
+    logger.info("Vector store created successfully")
     return vectordb
 
 
@@ -131,8 +161,10 @@ async def initialize(asin: str = Query(...), user_id: int = Query(...)):
         vector_db.save_local(f"{faiss_dir}/{cache_key}")
         meta_df.to_csv(f"{meta_dir}/{cache_key}.csv", index=False)
         vector_store_cache.append(cache_key)
+        logger.info(f"Retriever initialized and cached for ASIN: {asin} and User ID: {user_id}")
+    else:
+        logger.info(f"Retriever for ASIN: {asin} and User ID: {user_id} already cached")
 
-    logger.info(f"Retriever initialized successfully for ASIN: {asin} and User ID: {user_id}")
     return JSONResponse(content={"status": "retriever initialized", "asin": asin, "user_id": user_id}, status_code=200)
 
 
@@ -142,23 +174,25 @@ async def clear_retriever(request: clearCache):
     asin = request.parent_asin
     cache_key = f"{user_id}-{asin}"
 
+    logger.info(f"Received request to clear cache for ASIN: {asin} and User ID: {user_id}")
+
     if cache_key in vector_store_cache:
         if os.path.exists(f"{faiss_dir}/{cache_key}") and os.path.isdir(f"{faiss_dir}/{cache_key}"):
             shutil.rmtree(f"{faiss_dir}/{cache_key}")
         if os.path.exists(f"{meta_dir}/{cache_key}.csv") and os.path.isfile(f"{meta_dir}/{cache_key}.csv"):
             os.remove(f"{meta_dir}/{cache_key}.csv")
         vector_store_cache.remove(cache_key)
+        logger.info(f"Cache cleared for ASIN: {asin} and User ID: {user_id}")
         return {"status": "cache cleared"}
     else:
+        logger.warning(f"Cache for ASIN: {asin} and User ID: {user_id} not found")
         raise HTTPException(status_code=400, detail="Retriever not found")
+    
 
 @app.post("/dev-invoke")
 async def invoke(user_input: UserInput):
-    """
-    Invoke the agent with user input to retrieve a final response.
-    """
     cache_key = f"{user_input.user_id}-{user_input.parent_asin}"
-    logger.info("Received request to invoke agent")
+    logger.info(f"Received request to invoke agent for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
 
     if cache_key not in vector_store_cache:
         review_df, meta_df = await load_product_data(user_input.parent_asin)
@@ -166,34 +200,41 @@ async def invoke(user_input: UserInput):
         vector_db.save_local(f"{faiss_dir}/{cache_key}")
         meta_df.to_csv(f"{meta_dir}/{cache_key}.csv", index=False)
         vector_store_cache.append(cache_key)
+        logger.info(f"Cache initialized for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
 
+    # Ensure paths exist
     retriever = f"{faiss_dir}/{cache_key}"
     meta_df = f"{meta_dir}/{cache_key}.csv"
 
     if not os.path.exists(retriever):
+        logger.error(f"Retriever not initialized for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
         return JSONResponse(content={"status": "Retriever not initialized"}, status_code=400)
     if not os.path.exists(meta_df):
+        logger.error(f"Meta-Data not initialized for ASIN: {user_input.parent_asin} and User ID: {user_input.user_id}")
         return JSONResponse(content={"status": "Meta-Data not initialized"}, status_code=400)
-    
+
     agent: CompiledStateGraph = create_graph()
     config = {"configurable": {"thread_id": f"{user_input.user_id}"}}
 
     if user_input.log_langfuse:
         config.update({"callbacks": [langfuse_handler]})
     try:
-        response =  agent.invoke({
-                                "question": user_input.user_input, 
-                                "meta_data": meta_df,
-                                "retriever": retriever
-                            }, config=config)
+        response = agent.invoke({
+            "question": user_input.user_input, 
+            "meta_data": meta_df,
+            "retriever": retriever
+        }, config=config)
+        logger.info(f"Agent response generated for User ID: {user_input.user_id}")
 
         output = {
             'question': response['question'],
             'answer': response['answer'].content,
             'followup_questions': response['followup_questions']
         }
+        logger.debug(f"Final response: {output}")
         return output
     except Exception as e:
+        logger.error(f"Error invoking agent for User ID: {user_input.user_id} - {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -204,20 +245,25 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
     This is the workhorse method for the /stream endpoint.
     """
     cache_key = f"{user_input.user_id}-{user_input.parent_asin}"
+    logger.info(f"Initializing message generator for cache key: {cache_key}")
 
     if cache_key not in vector_store_cache:
+        logger.info(f"Cache miss for {cache_key}. Loading product data and initializing vector store.")
         review_df, meta_df = await load_product_data(user_input.parent_asin)
         vector_db = create_vector_store(review_df)
         vector_db.save_local(f"{faiss_dir}/{cache_key}")
         meta_df.to_csv(f"{meta_dir}/{cache_key}.csv", index=False)
         vector_store_cache.append(cache_key)
+        logger.info(f"Vector store and metadata initialized and cached for {cache_key}")
 
     retriever = f"{faiss_dir}/{cache_key}"
     meta_df = f"{meta_dir}/{cache_key}.csv"
 
     if not os.path.exists(retriever):
+        logger.error(f"Retriever not initialized for cache key: {cache_key}")
         yield JSONResponse(content={"status": "Retriever not initialized"}, status_code=400)
     if not os.path.exists(meta_df):
+        logger.error(f"Metadata file not found for cache key: {cache_key}")
         yield JSONResponse(content={"status": "Meta-Data not initialized"}, status_code=400)
     
     agent: CompiledStateGraph = create_graph()
@@ -227,14 +273,17 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
     if user_input.stream_tokens == 0:
         stream_tokens = False
 
+    logger.info("Starting event stream processing for agent.")
+    
     # Process streamed events from the graph and yield messages over the SSE stream.
     async for event in agent.astream_events({"question": user_input.user_input, 
                                             "meta_data": meta_df,
                                             "retriever": retriever
                                         }, version="v2", config=config):
         if not event:
+            logger.warning("Received empty event in stream.")
             continue
-             
+
         # Yield tokens streamed from LLMs.
         if (
             event["event"] == "on_chat_model_stream"
@@ -244,6 +293,7 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
         ):
             content = event["data"]["chunk"].content
             if content:
+                logger.debug(f"Streaming token: {content}")
                 yield f"data: {json.dumps({'type': 'token', 'content': content})}\n\n"
             continue
 
@@ -261,9 +311,11 @@ async def message_generator(user_input: UserInput, stream_tokens=True) -> AsyncG
                 "answer": answer,
                 "followup_questions": followup_questions
             }
-            # Yield the final structured response (after processing all streaming tokens)
+            logger.info(f"Yielding final response for question: {user_input.user_input}")
+            logger.debug(f"Final response: {output}")
             yield f"data: {json.dumps({'type': 'message', 'content': output})}\n\n"
 
+    logger.info("Message stream complete. Sending [DONE] signal.")
     yield "data: [DONE]\n\n"
 
 

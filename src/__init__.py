@@ -8,7 +8,6 @@ log_dir = "logs"
 log_filepath = os.path.join(log_dir,"running_logs.log")
 os.makedirs(log_dir, exist_ok=True)
 
-
 logging.basicConfig(
     level= logging.INFO,
     format= logging_str,
@@ -19,4 +18,4 @@ logging.basicConfig(
     ]
 )
 
-logger = logging.getLogger("ecomChatLogger")
+logger = logging.getLogger(__name__)
