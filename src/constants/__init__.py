@@ -1,5 +1,8 @@
 from pathlib import Path
 
+CONFIG_FILE_PATH = Path("config/config.yaml")
+PROMPTS_FILE_PATH = Path("prompts.yaml")
+
 # paths for Merging the Data
 TOY_METADATA = Path("artifacts/meta_Toys_and_Games.jsonl")
 VIDEO_GAME_METADATA = Path("artifacts/meta_Video_Games.jsonl")

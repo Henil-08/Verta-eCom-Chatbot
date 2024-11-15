@@ -1,0 +1,11 @@
+prepare_base_model:
+  supervisor_model: gpt-4o-mini
+  metadata_model: llama-3.1-8b-instant
+  base_model: llama-3.1-70b-versatile
+  followup_model: llama-3.1-8b-instant
+
+evaluation:
+  root_dir: evaluation
+  metrics_path: evaluation/metrics
+  results_path: evaluation/results
+  testset_path: evaluation/testset
