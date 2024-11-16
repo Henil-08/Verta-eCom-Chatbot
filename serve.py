@@ -193,11 +193,10 @@ async def message_generator(payload: Payload, stream_tokens=True) -> AsyncGenera
 
     This is the workhorse method for the /stream endpoint.
     """
-    logger.info(f"Initializing message generator for cache key: {cache_key}")
-    
     asin = payload.parent_asin
     user_id = payload.user_id
     cache_key = f"{user_id}-{asin}"
+    logger.info(f"Initializing message generator for cache key: {cache_key}")
 
     # Ensure paths exist
     retriever_path, metadata_path = clapp.generate.initialize(asin, user_id, returnPath=True)
