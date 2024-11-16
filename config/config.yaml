@@ -1,0 +1,22 @@
+prepare_base_model:
+  cache_dir: cache
+  faiss_dir: cache/faiss
+  meta_dir: cache/meta
+  supervisor_model: gpt-4o-mini
+  metadata_model: llama-3.1-8b-instant
+  base_model: llama-3.1-70b-versatile
+  followup_model: llama-3.1-8b-instant
+
+
+test_ingestion:
+  artifact_dir: artifact
+  evaluation_root_dir: evaluation
+  testset_path: evaluation/testset
+
+
+evaluation:
+  root_dir: evaluation
+  metrics_path: evaluation/metrics
+  results_path: evaluation/results
+  testset_path: evaluation/testset
+  file_hash: artifact/product_uuids.json

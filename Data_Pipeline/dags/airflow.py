@@ -28,9 +28,6 @@ dag = DAG(
     catchup=False,
 )
 
-
-
-
 get_metadata = PythonOperator(
     task_id='get_metadata',
     python_callable=ingest_data_meta,
@@ -44,11 +41,6 @@ get_review_data = PythonOperator(
     op_args=['https://github.com/SoumyaeCodes/DockDecoder/raw/refs/heads/master/test_user_reviews.json.zip'],
     dag=dag,
 )
-
-
-
-
-
 
 json_to_csv_review_data = PythonOperator(
     task_id='json_to_csv_review_data',

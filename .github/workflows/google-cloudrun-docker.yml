@@ -3,6 +3,8 @@ name: 'Build and Deploy to Cloud Run'
 on:
   push:
     branches: ["dev"]
+    paths-ignore:
+      - 'README.md'
 
 env:
   PROJECT_ID: 'ecom-chat-437005'

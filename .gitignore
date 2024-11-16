@@ -4,7 +4,7 @@ verta
 cache
 **/__pycache__
 .venv
-verta
+**/mlruns
 cache
 artifacts
 ecom
