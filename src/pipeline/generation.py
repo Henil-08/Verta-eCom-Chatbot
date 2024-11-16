@@ -8,7 +8,7 @@ from datetime import datetime
 from sqlalchemy import text
 from langfuse import Langfuse
 from pandas import DataFrame
-from langchain.document_loaders import DataFrameLoader
+from langchain_community.document_loaders import DataFrameLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from src.entity.config_entity import PrepareBaseModelConfig
