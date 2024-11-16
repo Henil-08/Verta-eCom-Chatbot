@@ -18,6 +18,13 @@ class PrepareBaseModelConfig:
 
 
 @dataclass(frozen=True)
+class TestIngestionConfig:
+    artifact_dir: Path
+    evaluation_root_dir: Path
+    testset_path: Path
+    prompt_metadata: str
+
+@dataclass(frozen=True)
 class EvaluationConfig:
     root_dir: Path
     metrics_path: Path

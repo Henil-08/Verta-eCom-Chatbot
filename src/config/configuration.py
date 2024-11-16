@@ -1,7 +1,7 @@
 from pathlib import Path
 from src.constants import CONFIG_FILE_PATH, PROMPTS_FILE_PATH
 from src.utils.common import read_yaml, create_directories
-from src.entity.config_entity import (EvaluationConfig, PrepareBaseModelConfig)
+from src.entity.config_entity import (EvaluationConfig, PrepareBaseModelConfig, TestIngestionConfig)
 
 
 class ConfigurationManager:
@@ -17,9 +17,7 @@ class ConfigurationManager:
     def get_prepare_base_model_config(self) -> PrepareBaseModelConfig:
         config = self.config.prepare_base_model
 
-        create_directories([config.cache_dir])
-        create_directories([config.faiss_dir])
-        create_directories([config.meta_dir])
+        create_directories([config.cache_dir, config.faiss_dir, config.meta_dir])
         
         prepare_base_model_config = PrepareBaseModelConfig(
             cache_dir=config.cache_dir,
@@ -37,6 +35,20 @@ class ConfigurationManager:
 
         return prepare_base_model_config
     
+
+    def get_test_ingestion_config(self) -> TestIngestionConfig:
+        config = self.config.test_ingestion
+
+        create_directories([config.artifact_dir, config.evaluation_root_dir, config.testset_path])
+
+        test_ingestion_config = TestIngestionConfig(
+            artifact_dir=Path(config.artifact_dir),
+            evaluation_root_dir=Path(config.evaluation_root_dir),
+            testset_path=Path(config.testset_path),
+            prompt_metadata=self.prompts.METADATA_PROMPT,
+        )
+        return test_ingestion_config
+
 
     def get_evaluation_config(self) -> EvaluationConfig:
         config = self.config.evaluation

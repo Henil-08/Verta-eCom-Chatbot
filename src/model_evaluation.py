@@ -10,8 +10,6 @@ from ragas.metrics import (
     context_recall,
     context_precision,
 )
-import nest_asyncio
-nest_asyncio.apply()
 from datasets import Dataset
 from urllib.parse import urlparse
 import pandas as pd
@@ -37,6 +35,14 @@ class Evaluation:
         self.results = pd.DataFrame()
 
     
+    # Read and combine DataFrames
+    def process_parquet(self, file, uuid_asin_map):
+        df = pd.read_parquet(os.path.join(self.config.testset_path, file))
+        df['file_hash'] = file.split('.')[0]
+        df['parent_asin'] = df['file_hash'].map(uuid_asin_map)
+        return df
+
+
     def load_test_data(self):
         parquet_files = [f for f in os.listdir(self.config.testset_path) if f.endswith('.parquet')]
 
@@ -45,17 +51,10 @@ class Evaluation:
 
         uuid_asin_map = {v: k for k, v in asin_uuid_map.items()}
 
-        # Read and combine DataFrames
-        def process_parquet(f):
-            df = pd.read_parquet(os.path.join(self.config.testset_path, f))
-            df['file_hash'] = f.split('.')[0]
-            df['parent_asin'] = df['file_hash'].map(uuid_asin_map)
-            return df
-
-        dfs = [process_parquet(f) for f in parquet_files]
+        dfs = [self.process_parquet(f, uuid_asin_map) for f in parquet_files]
         test_df = pd.concat(dfs, ignore_index=True)
 
-        return test_df.iloc[:1, :]
+        return test_df
 
     def load_product_data(self, asin: str):
         credentials = {

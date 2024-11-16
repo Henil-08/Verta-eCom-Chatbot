@@ -10,6 +10,7 @@ nltk
 nest-asyncio
 scikit-learn
 ipykernel
+dvc
 fastapi
 uvicorn
 datasets

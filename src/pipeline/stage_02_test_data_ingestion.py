@@ -1,7 +1,8 @@
-from src.graph import Graph
-from src.config.configuration import ConfigurationManager
-from langgraph.graph.state import CompiledStateGraph
+import nest_asyncio
+nest_asyncio.apply()
 
+from src.test_ingestion import TestIngestion
+from src.config.configuration import ConfigurationManager
 from src import logger
 
 import os
@@ -22,25 +23,38 @@ os.environ["MLFLOW_TRACKING_USERNAME"]=os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"]=os.getenv("MLFLOW_TRACKING_PASSWORD")
 
 
-STAGE_NAME = "Create LangGraph Workflow"
+STAGE_NAME = "Test Data Ingestion"
 
-class PrepareBaseTrainingPipeline:
+
+class TestIngestionPipeline:
     def __init__(self):
         pass
 
-    def graph(self, isMemory=True) -> CompiledStateGraph:
+    def ingest(self):
+        # product_asins = [
+        #     "B00000IV35", "0975277324", "8499000606", "B00000IZJB", "1933054395", 
+        #     "0976990709", "B00000IZKX", "B00000ISC5", "B00001ZWV7", "B00005O6B7", 
+        #     "B0000205XI", "B00000DMD2", "B00000IV95", "B00000IV34", "B00005BZKD", 
+        #     "1932855785", "B00000JBMZ", "B00004W3Y4", "B00004TFLB", "160169024X", 
+        #     "B00000JIVS", "B00004YO15", "2914849656", "B00004NKLB", "B00000DMER", 
+        #     "B000062SPJ", "B00000IZOU", "B00003008E", "076245945X", "B000050B3H"
+        # ]
+        product_asins = [
+            "B00000IV35"
+        ]
+
         config = ConfigurationManager()
-        prepare_base_model_config = config.get_prepare_base_model_config()
-        prepare_base_model = Graph(config=prepare_base_model_config)
-        app = prepare_base_model.create_graph(isMemory=isMemory)
-        return app
+        test_ingest_config = config.get_test_ingestion_config()
+        ingestion = TestIngestion(config=test_ingest_config, 
+                                product_asins=product_asins)
+        ingestion.generate_test_set()
 
 
 if __name__ == "__main__":
     try:
         logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
-        obj = PrepareBaseTrainingPipeline()
-        app = obj.graph()
+        obj = TestIngestionPipeline()
+        obj.ingest()
         logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
     except Exception as e:
         logger.exception(e)

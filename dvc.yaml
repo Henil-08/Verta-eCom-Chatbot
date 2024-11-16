@@ -1,0 +1,26 @@
+stages:
+  prepare_base_model:
+    cmd: python src/pipeline/stage_01_prepare_base_model.py
+    deps:
+      - src/pipeline/stage_01_prepare_base_model.py
+      - config/config.yaml
+
+
+  test_ingestion:
+    cmd: python src/pipeline/stage_02_test_data_ingestion.py
+    deps:
+      - src/pipeline/stage_02_test_data_ingestion.py
+      - config/config.yaml
+    outs:
+      - artifact/product_uuids.json
+
+
+  evaluation:
+    cmd: python src/pipeline/stage_03_model_evaluation.py
+    deps:
+      - src/pipeline/stage_03_model_evaluation.py
+      - config/config.yaml
+      - evaluation/testset
+    metrics:
+    - evaluation/metrics/base-scores.json:
+        cache: false

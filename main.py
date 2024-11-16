@@ -1,6 +1,10 @@
+import nest_asyncio
+nest_asyncio.apply()
+
 from src import logger
 from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
-from src.pipeline.stage_02_model_evaluation import ModelEvaluationPipeline
+from src.pipeline.stage_02_test_data_ingestion import TestIngestionPipeline
+from src.pipeline.stage_03_model_evaluation import ModelEvaluationPipeline
 
 import os
 from dotenv import load_dotenv
@@ -10,6 +14,7 @@ load_dotenv()
 os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
 os.environ['OPENAI_API_KEY']=os.getenv("OPENAI_API_KEY")
 os.environ['GROQ_API_KEY']=os.getenv("GROQ_API_KEY")
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']=os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 os.environ['LANGFUSE_PUBLIC_KEY']=os.getenv("LANGFUSE_PUBLIC_KEY")
 os.environ['LANGFUSE_SECRET_KEY']=os.getenv("LANGFUSE_SECRET_KEY")
 os.environ['LANGFUSE_HOST']=os.getenv("LANGFUSE_HOST")
@@ -32,6 +37,17 @@ try:
 except Exception as e:
     logger.exception(e)
     raise e 
+
+
+STAGE_NAME = "Test Data Ingestion"
+try:
+    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+    ingest = TestIngestionPipeline()
+    ingest.ingest()
+    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
+except Exception as e:
+    logger.exception(e)
+    raise e
 
 
 STAGE_NAME = "Model Evaluation"

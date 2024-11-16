@@ -1,0 +1,50 @@
+schema: '2.0'
+stages:
+  prepare_base_model:
+    cmd: python src/pipeline/stage_01_prepare_base_model.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 0e8efaefb31dd804e2aeb0f993d3ad42
+      size: 529
+    - path: src/pipeline/stage_01_prepare_base_model.py
+      hash: md5
+      md5: f657281725bb4a3338663ee0c5eaeef3
+      size: 1699
+  test_ingestion:
+    cmd: python src/pipeline/stage_02_test_data_ingestion.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 0e8efaefb31dd804e2aeb0f993d3ad42
+      size: 529
+    - path: src/pipeline/stage_02_test_data_ingestion.py
+      hash: md5
+      md5: b3046e618ad443eae224cf812f4f61c7
+      size: 2253
+    outs:
+    - path: artifact/product_uuids.json
+      hash: md5
+      md5: e35e7687fbe9b6b3c8a70e08655ac0a5
+      size: 60
+  evaluation:
+    cmd: python src/pipeline/stage_03_model_evaluation.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 0e8efaefb31dd804e2aeb0f993d3ad42
+      size: 529
+    - path: evaluation/testset
+      hash: md5
+      md5: 5919523e70da3523764ac59b9f0d256a.dir
+      size: 13234
+      nfiles: 1
+    - path: src/pipeline/stage_03_model_evaluation.py
+      hash: md5
+      md5: 28a8e81a5b9a673114cd4a6d4b217846
+      size: 2062
+    outs:
+    - path: evaluation/metrics/base-scores.json
+      hash: md5
+      md5: cb604aef9924609a5fa47022c6a89339
+      size: 357
