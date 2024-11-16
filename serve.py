@@ -12,8 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.config.configuration import ConfigurationManager
 from src.pydantic.models import Payload, scoreTrace
-from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline 
-from src.pipeline.generation import Generate 
+from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
+from src.pipeline.generation import Generate
 
 from src import logger
 
