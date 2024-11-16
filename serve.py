@@ -25,10 +25,14 @@ load_dotenv()
 os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
 os.environ['OPENAI_API_KEY']=os.getenv("OPENAI_API_KEY")
 os.environ['GROQ_API_KEY']=os.getenv("GROQ_API_KEY")
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']=os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
 os.environ['LANGFUSE_PUBLIC_KEY']=os.getenv("LANGFUSE_PUBLIC_KEY")
 os.environ['LANGFUSE_SECRET_KEY']=os.getenv("LANGFUSE_SECRET_KEY")
 os.environ['LANGFUSE_HOST']=os.getenv("LANGFUSE_HOST")
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["MLFLOW_TRACKING_URI"]=os.getenv("MLFLOW_TRACKING_URI")
+os.environ["MLFLOW_TRACKING_USERNAME"]=os.getenv("MLFLOW_TRACKING_USERNAME")
+os.environ["MLFLOW_TRACKING_PASSWORD"]=os.getenv("MLFLOW_TRACKING_PASSWORD")
 
 app = FastAPI()
 
