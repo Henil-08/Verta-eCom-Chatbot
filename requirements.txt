@@ -22,6 +22,7 @@ google-auth-oauthlib
 db-dtypes
 langchain
 langchain-community
+email-validator >= 2.0
 langgraph
 langchain-huggingface
 langchain-openai

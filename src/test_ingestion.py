@@ -135,8 +135,9 @@ class TestIngestion:
         )
         return testset
     
-    def transform_ragas_testset_df(self, testset):
+    def transform_ragas_testset_df(self, testset, asin):
         ragas_test_df = testset.to_pandas()
+        ragas_test_df['parent_asin'] = asin
         ragas_test_df.drop(columns=['metadata', 'episode_done'], inplace=True)
         return ragas_test_df
     
@@ -155,7 +156,7 @@ class TestIngestion:
             try:
                 logger.info(f"Generating Test Data for {asin}...")
                 testset = self.get_ragas_testset(docs[:20] if len(docs) > 20 else docs)
-                test_df = self.transform_ragas_testset_df(testset)
+                test_df = self.transform_ragas_testset_df(testset, asin)
                 save_parquet(path=Path(f'{self.config.testset_path}/{self.hash_table[asin]}.parquet'), data=test_df)
             except Exception as e:
                 logger.error(f'Error occurred while processing {asin}: {e}')

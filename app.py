@@ -3,12 +3,16 @@ import asyncio
 import src.old_graph as old_graph
 import pandas as pd
 import streamlit as st
+
 from sqlalchemy import text
+
 from src.utils import database as db
 from langfuse.callback import CallbackHandler
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.document_loaders import DataFrameLoader
+from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
+
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -32,6 +36,9 @@ credentials = {
     'DB_PASS': os.getenv("DB_PASS"),
     'DB_NAME': os.getenv("DB_NAME")
 }
+
+prepare_base = PrepareBaseTrainingPipeline()
+app = prepare_base.graph(isMemory=False)
 
 ## set up Streamlit 
 st.set_page_config(page_title="Verta", page_icon="🧑‍💻")
@@ -89,8 +96,6 @@ if asin:
     if retriever:
         st.write("Fetched Review Data", review_df)
         st.write("Fetched Meta Data", meta_df)
-
-        app = old_graph.create_graph(isMemory=False)
 
         # User question input field
         user_input = st.text_input("Your question:", key="user_question")

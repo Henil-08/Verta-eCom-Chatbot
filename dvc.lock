@@ -9,8 +9,8 @@ stages:
       size: 529
     - path: src/pipeline/stage_01_prepare_base_model.py
       hash: md5
-      md5: f657281725bb4a3338663ee0c5eaeef3
-      size: 1699
+      md5: 8b3a1566128affb0f7de152329a8ca7e
+      size: 1698
   test_ingestion:
     cmd: python src/pipeline/stage_02_test_data_ingestion.py
     deps:
@@ -20,13 +20,13 @@ stages:
       size: 529
     - path: src/pipeline/stage_02_test_data_ingestion.py
       hash: md5
-      md5: b3046e618ad443eae224cf812f4f61c7
-      size: 2253
+      md5: 4e968eedc445e8872657cd101f5e9ecf
+      size: 2243
     outs:
     - path: artifact/product_uuids.json
       hash: md5
-      md5: e35e7687fbe9b6b3c8a70e08655ac0a5
-      size: 60
+      md5: 1cb417dfdd92e528b433612dd2d1c9c1
+      size: 1742
   evaluation:
     cmd: python src/pipeline/stage_03_model_evaluation.py
     deps:

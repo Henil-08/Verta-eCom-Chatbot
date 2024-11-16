@@ -54,7 +54,7 @@ class Evaluation:
         dfs = [self.process_parquet(f, uuid_asin_map) for f in parquet_files]
         test_df = pd.concat(dfs, ignore_index=True)
 
-        return test_df
+        return test_df[:30]
 
     def load_product_data(self, asin: str):
         credentials = {

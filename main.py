@@ -39,15 +39,15 @@ except Exception as e:
     raise e 
 
 
-STAGE_NAME = "Test Data Ingestion"
-try:
-    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
-    ingest = TestIngestionPipeline()
-    ingest.ingest()
-    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
-except Exception as e:
-    logger.exception(e)
-    raise e
+# STAGE_NAME = "Test Data Ingestion"
+# try:
+#     logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+#     ingest = TestIngestionPipeline()
+#     ingest.ingest()
+#     logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
+# except Exception as e:
+#     logger.exception(e)
+#     raise e
 
 
 STAGE_NAME = "Model Evaluation"

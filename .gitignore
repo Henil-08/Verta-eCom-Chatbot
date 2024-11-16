@@ -6,6 +6,4 @@ cache
 .venv
 **/mlruns
 cache
-artifacts
-ecom
 **/__pycache__/
