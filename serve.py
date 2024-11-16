@@ -199,7 +199,7 @@ async def message_generator(payload: Payload, stream_tokens=True) -> AsyncGenera
     logger.info(f"Initializing message generator for cache key: {cache_key}")
 
     # Ensure paths exist
-    retriever_path, metadata_path = clapp.generate.initialize(asin, user_id, returnPath=True)
+    retriever_path, metadata_path = await clapp.generate.initialize(asin, user_id, returnPath=True)
 
     if not os.path.exists(retriever_path):
         logger.error(f"Retriever not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}")
