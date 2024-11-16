@@ -1891,3 +1891,623 @@ __root__
 [2024-11-15 18:51:46,698: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
 
 ]
+[2024-11-15 18:56:05,043: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 18:56:05,044: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 18:56:05,046: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 18:56:05,861: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 18:56:06,384: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 18:56:06,713: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 18:56:06,716: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 19:24:14,447: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 19:24:14,448: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:24:14,449: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:24:14,450: INFO: common: created directory at: cache]
+[2024-11-15 19:24:14,450: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:24:14,450: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:24:15,244: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:24:16,047: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:24:16,359: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:24:16,360: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 19:51:35,961: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 19:51:36,365: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 19:51:36,365: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:51:36,368: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:51:36,368: INFO: common: created directory at: cache]
+[2024-11-15 19:51:36,368: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:51:36,368: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:51:37,273: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:51:37,800: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:51:38,113: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:51:38,115: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 19:51:38,116: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 19:51:38,117: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:51:38,121: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:51:38,121: INFO: common: created directory at: evaluation]
+[2024-11-15 19:51:38,121: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 19:51:38,122: INFO: common: created directory at: evaluation/results]
+[2024-11-15 19:51:38,122: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 19:51:38,122: INFO: common: created directory at: cache]
+[2024-11-15 19:51:38,122: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:51:38,122: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:51:38,122: ERROR: main: connect_with_db() missing 1 required positional argument: 'credentials']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 46, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 18, in evaluate
+    evaluation = Evaluation(eval_config, base_config, self.app)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 35, in __init__
+    self.engine = connect_with_db(),
+                  ^^^^^^^^^^^^^^^^^
+TypeError: connect_with_db() missing 1 required positional argument: 'credentials'
+[2024-11-15 19:53:18,624: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 19:53:18,978: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 19:53:18,979: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:53:18,981: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:53:18,981: INFO: common: created directory at: cache]
+[2024-11-15 19:53:18,981: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:53:18,981: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:53:20,317: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:53:21,082: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:53:21,449: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:53:21,452: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 19:53:21,452: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 19:53:21,454: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:53:21,457: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:53:21,457: INFO: common: created directory at: evaluation]
+[2024-11-15 19:53:21,457: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 19:53:21,458: INFO: common: created directory at: evaluation/results]
+[2024-11-15 19:53:21,458: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 19:53:21,458: INFO: common: created directory at: cache]
+[2024-11-15 19:53:21,458: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:53:21,458: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:53:21,460: ERROR: main: 'tuple' object has no attribute 'testset_path']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 19, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 148, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 106, in generate_response
+    test_df = self.load_test_data()
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 41, in load_test_data
+    parquet_files = [f for f in os.listdir(self.config.testset_path) if f.endswith('.parquet')]
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'testset_path'
+[2024-11-15 19:56:10,500: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 19:56:10,980: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 19:56:10,981: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:56:10,983: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:56:10,983: INFO: common: created directory at: cache]
+[2024-11-15 19:56:10,983: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:56:10,983: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:56:11,671: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:56:12,290: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:56:12,716: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:56:12,717: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 19:56:12,717: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 19:56:12,718: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:56:12,720: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:56:12,720: INFO: common: created directory at: evaluation]
+[2024-11-15 19:56:12,720: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 19:56:12,720: INFO: common: created directory at: evaluation/results]
+[2024-11-15 19:56:12,720: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 19:56:12,720: INFO: common: created directory at: cache]
+[2024-11-15 19:56:12,720: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:56:12,720: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:56:12,723: ERROR: main: 'tuple' object has no attribute 'testset_path']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 19, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 149, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 107, in generate_response
+    test_df = self.load_test_data()
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 42, in load_test_data
+    parquet_files = [f for f in os.listdir(self.config.testset_path) if f.endswith('.parquet')]
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'testset_path'
+[2024-11-15 19:58:05,330: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 19:58:05,709: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 19:58:05,710: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:58:05,712: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:58:05,712: INFO: common: created directory at: cache]
+[2024-11-15 19:58:05,712: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:58:05,712: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:58:06,491: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:58:07,041: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:58:07,353: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 19:58:07,356: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 19:58:07,356: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 19:58:07,357: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 19:58:07,360: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 19:58:07,360: INFO: common: created directory at: evaluation]
+[2024-11-15 19:58:07,360: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 19:58:07,360: INFO: common: created directory at: evaluation/results]
+[2024-11-15 19:58:07,361: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 19:58:07,361: INFO: common: created directory at: cache]
+[2024-11-15 19:58:07,361: INFO: common: created directory at: cache/faiss]
+[2024-11-15 19:58:07,361: INFO: common: created directory at: cache/meta]
+[2024-11-15 19:58:07,363: ERROR: main: 'tuple' object has no attribute 'testset_path']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 19, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 149, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 107, in generate_response
+    test_df = self.load_test_data()
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 41, in load_test_data
+    print(self.config.testset_path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'testset_path'
+[2024-11-15 20:05:24,301: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:05:24,664: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:05:24,664: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:05:24,666: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:05:24,666: INFO: common: created directory at: cache]
+[2024-11-15 20:05:24,666: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:05:24,666: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:05:25,237: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:05:25,709: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:05:26,113: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:05:26,115: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:05:26,115: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:05:26,117: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:05:26,119: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:05:26,119: INFO: common: created directory at: evaluation]
+[2024-11-15 20:05:26,119: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:05:26,119: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:05:26,119: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:05:26,120: INFO: common: created directory at: cache]
+[2024-11-15 20:05:26,120: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:05:26,120: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:05:26,121: ERROR: main: 'tuple' object has no attribute 'testset_path']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 19, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 149, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 107, in generate_response
+    test_df = self.load_test_data()
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 42, in load_test_data
+    parquet_files = [f for f in os.listdir(self.config.testset_path) if f.endswith('.parquet')]
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'testset_path'
+[2024-11-15 20:07:03,845: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:07:04,218: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:07:04,219: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:07:04,220: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:07:04,221: INFO: common: created directory at: cache]
+[2024-11-15 20:07:04,221: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:07:04,221: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:07:04,704: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:07:05,247: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:07:05,721: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:07:05,724: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:07:05,725: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:07:05,726: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:07:05,730: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:07:05,730: INFO: common: created directory at: evaluation]
+[2024-11-15 20:07:05,730: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:07:05,730: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:07:05,731: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:07:05,731: INFO: common: created directory at: cache]
+[2024-11-15 20:07:05,731: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:07:05,731: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:07:05,732: ERROR: main: 'tuple' object has no attribute 'testset_path']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 19, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 148, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 106, in generate_response
+    test_df = self.load_test_data()
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 41, in load_test_data
+    parquet_files = [f for f in os.listdir(self.config.testset_path) if f.endswith('.parquet')]
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'testset_path'
+[2024-11-15 20:13:18,599: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:13:18,962: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:13:18,963: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:13:18,964: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:13:18,965: INFO: common: created directory at: cache]
+[2024-11-15 20:13:18,965: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:13:18,965: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:13:19,711: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:13:20,234: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:13:20,598: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:13:20,601: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:13:20,601: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:13:20,603: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:13:20,606: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:13:20,607: INFO: common: created directory at: evaluation]
+[2024-11-15 20:13:20,607: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:13:20,607: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:13:20,607: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:13:20,609: INFO: common: created directory at: cache]
+[2024-11-15 20:13:20,609: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:13:20,609: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:13:20,610: ERROR: main: 'tuple' object has no attribute 'testset_path']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 22, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 148, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 106, in generate_response
+    test_df = self.load_test_data()
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 41, in load_test_data
+    parquet_files = [f for f in os.listdir(self.config.testset_path) if f.endswith('.parquet')]
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'testset_path'
+[2024-11-15 20:14:49,359: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:14:49,705: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:14:49,706: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:14:49,707: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:14:49,708: INFO: common: created directory at: cache]
+[2024-11-15 20:14:49,708: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:14:49,708: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:14:50,420: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:14:51,023: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:14:51,469: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:14:51,472: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:14:51,472: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:14:51,474: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:14:51,477: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:14:51,478: INFO: common: created directory at: evaluation]
+[2024-11-15 20:14:51,478: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:14:51,478: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:14:51,478: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:14:51,478: INFO: common: created directory at: cache]
+[2024-11-15 20:14:51,478: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:14:51,478: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:14:51,480: ERROR: main: 'tuple' object has no attribute 'testset_path']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 21, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 149, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 107, in generate_response
+    test_df = self.load_test_data()
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 42, in load_test_data
+    parquet_files = [f for f in os.listdir(self.config.testset_path) if f.endswith('.parquet')]
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'testset_path'
+[2024-11-15 20:15:28,796: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:15:29,144: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:15:29,145: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:15:29,147: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:15:29,147: INFO: common: created directory at: cache]
+[2024-11-15 20:15:29,147: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:15:29,147: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:15:29,901: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:15:30,435: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:15:30,791: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:15:30,794: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:15:30,794: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:15:30,796: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:15:30,799: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:15:30,800: INFO: common: created directory at: evaluation]
+[2024-11-15 20:15:30,800: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:15:30,800: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:15:30,800: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:15:30,800: INFO: common: created directory at: cache]
+[2024-11-15 20:15:30,800: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:15:30,800: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:15:30,801: ERROR: main: 'tuple' object has no attribute 'testset_path']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 21, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 148, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 106, in generate_response
+    test_df = self.load_test_data()
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 41, in load_test_data
+    parquet_files = [f for f in os.listdir(self.config.testset_path) if f.endswith('.parquet')]
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'testset_path'
+[2024-11-15 20:17:36,533: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:17:36,907: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:17:36,908: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:17:36,910: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:17:36,910: INFO: common: created directory at: cache]
+[2024-11-15 20:17:36,910: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:17:36,910: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:17:39,067: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:17:39,779: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:17:40,097: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:17:40,099: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:17:40,099: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:17:40,100: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:17:40,101: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:17:40,101: INFO: common: created directory at: evaluation]
+[2024-11-15 20:17:40,101: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:17:40,102: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:17:40,102: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:17:40,102: INFO: common: created directory at: cache]
+[2024-11-15 20:17:40,102: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:17:40,102: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:17:47,220: ERROR: main: Evaluation.create_vector_store() takes 1 positional argument but 2 were given]
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 21, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 148, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 113, in generate_response
+    vector_db = self.create_vector_store(review_df)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Evaluation.create_vector_store() takes 1 positional argument but 2 were given
+[2024-11-15 20:18:09,071: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:18:09,436: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:18:09,437: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:18:09,439: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:18:09,439: INFO: common: created directory at: cache]
+[2024-11-15 20:18:09,439: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:18:09,439: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:18:10,006: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:18:10,712: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:18:11,031: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:18:11,034: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:18:11,034: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:18:11,036: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:18:11,039: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:18:11,039: INFO: common: created directory at: evaluation]
+[2024-11-15 20:18:11,039: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:18:11,039: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:18:11,039: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:18:11,039: INFO: common: created directory at: cache]
+[2024-11-15 20:18:11,040: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:18:11,040: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:18:16,408: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:18:16,408: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:18:22,204: INFO: loader: Loading faiss.]
+[2024-11-15 20:18:22,261: INFO: loader: Successfully loaded faiss.]
+[2024-11-15 20:18:22,280: ERROR: main: unsupported operand type(s) for /: 'str' and 'str']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 21, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 148, in evaluation
+    test_df = self.generate_response()
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 118, in generate_response
+    retriever = self.base_config.faiss_dir / cache_key
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'str' and 'str'
+[2024-11-15 20:19:30,042: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:19:30,415: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:19:30,416: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:19:30,417: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:19:30,417: INFO: common: created directory at: cache]
+[2024-11-15 20:19:30,417: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:19:30,417: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:19:30,955: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:19:31,540: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:19:31,979: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:19:31,982: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:19:31,982: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:19:31,984: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:19:31,987: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:19:31,987: INFO: common: created directory at: evaluation]
+[2024-11-15 20:19:31,988: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:19:31,988: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:19:31,988: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:19:31,988: INFO: common: created directory at: cache]
+[2024-11-15 20:19:31,988: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:19:31,988: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:19:37,577: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:19:37,577: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:19:40,593: INFO: loader: Loading faiss.]
+[2024-11-15 20:19:40,612: INFO: loader: Successfully loaded faiss.]
+[2024-11-15 20:19:41,426: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:19:41,426: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:19:51,170: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:19:51,170: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:20:05,008: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:20:05,009: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:20:10,499: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:20:10,500: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:20:19,345: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:20:19,345: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:20:30,470: ERROR: main: Dataset feature "contexts" should be of type Sequence[string], got <class 'datasets.features.features.Sequence'>]
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 21, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 151, in evaluation
+    result = evaluate(
+             ^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/verta/lib/python3.12/site-packages/ragas/_analytics.py", line 129, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/verta/lib/python3.12/site-packages/ragas/evaluation.py", line 165, in evaluate
+    validate_column_dtypes(dataset)
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/verta/lib/python3.12/site-packages/ragas/validation.py", line 56, in validate_column_dtypes
+    raise ValueError(
+ValueError: Dataset feature "contexts" should be of type Sequence[string], got <class 'datasets.features.features.Sequence'>
+[2024-11-15 20:21:25,814: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:21:26,155: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:21:26,156: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:21:26,157: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:21:26,157: INFO: common: created directory at: cache]
+[2024-11-15 20:21:26,157: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:21:26,157: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:21:26,804: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:21:27,448: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:21:27,850: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:21:27,853: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:21:27,853: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:21:27,854: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:21:27,857: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:21:27,858: INFO: common: created directory at: evaluation]
+[2024-11-15 20:21:27,858: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:21:27,858: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:21:27,858: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:21:27,858: INFO: common: created directory at: cache]
+[2024-11-15 20:21:27,858: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:21:27,858: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:21:33,414: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:21:33,414: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:21:36,881: INFO: loader: Loading faiss.]
+[2024-11-15 20:21:36,895: INFO: loader: Successfully loaded faiss.]
+[2024-11-15 20:21:37,435: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:21:37,435: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:21:42,541: ERROR: main: Dataset feature "contexts" should be of type Sequence[string], got <class 'datasets.features.features.Sequence'>]
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 21, in evaluate
+    evaluation.evaluation()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 150, in evaluation
+    result = evaluate(
+             ^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/verta/lib/python3.12/site-packages/ragas/_analytics.py", line 129, in wrapper
+    result = func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/verta/lib/python3.12/site-packages/ragas/evaluation.py", line 165, in evaluate
+    validate_column_dtypes(dataset)
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/verta/lib/python3.12/site-packages/ragas/validation.py", line 56, in validate_column_dtypes
+    raise ValueError(
+ValueError: Dataset feature "contexts" should be of type Sequence[string], got <class 'datasets.features.features.Sequence'>
+[2024-11-15 20:22:01,229: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:22:01,569: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:22:01,570: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:22:01,571: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:22:01,571: INFO: common: created directory at: cache]
+[2024-11-15 20:22:01,571: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:22:01,571: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:22:02,063: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:22:02,580: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:22:02,977: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:22:02,979: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:22:02,979: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:22:02,980: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:22:02,981: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:22:02,982: INFO: common: created directory at: evaluation]
+[2024-11-15 20:22:02,982: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:22:02,982: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:22:02,982: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:22:02,982: INFO: common: created directory at: cache]
+[2024-11-15 20:22:02,982: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:22:02,982: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:22:08,015: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:22:08,015: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:22:10,674: INFO: loader: Loading faiss.]
+[2024-11-15 20:22:10,686: INFO: loader: Successfully loaded faiss.]
+[2024-11-15 20:22:11,375: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:22:11,375: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:22:26,713: INFO: common: parquet file saved at: evaluation/results/base.parquet]
+[2024-11-15 20:22:26,716: INFO: common: parquet file saved at: evaluation/results/base-results.parquet]
+[2024-11-15 20:22:26,717: INFO: common: json file saved at: evaluation/metrics/scores.json]
+[2024-11-15 20:22:27,937: ERROR: main: 'Evaluation' object has no attribute 'score']
+Traceback (most recent call last):
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/main.py", line 41, in <module>
+    eval.evaluate()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/pipeline/stage_02_model_evaluation.py", line 23, in evaluate
+    evaluation.log_into_mlflow()
+  File "/Users/henil08/College/Semesters/Fall 2024/eCom-Chatbot/src/model_evaluation.py", line 180, in log_into_mlflow
+    {"loss": self.score[0], "accuracy": self.score[1]}
+             ^^^^^^^^^^
+AttributeError: 'Evaluation' object has no attribute 'score'
+[2024-11-15 20:23:25,581: INFO: config: PyTorch version 2.5.1 available.]
+[2024-11-15 20:23:25,924: INFO: main: >>>>>> stage Create LangGraph Workflow started <<<<<<]
+[2024-11-15 20:23:25,925: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:23:25,926: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:23:25,928: INFO: common: created directory at: cache]
+[2024-11-15 20:23:25,929: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:23:25,929: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:23:26,488: INFO: _client: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:23:26,946: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:23:27,398: INFO: _client: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"]
+[2024-11-15 20:23:27,401: INFO: main: >>>>>> stage Create LangGraph Workflow completed <<<<<<
+
+]
+[2024-11-15 20:23:27,401: INFO: main: >>>>>> stage Model Evaluation started <<<<<<]
+[2024-11-15 20:23:27,405: INFO: common: yaml file: config/config.yaml loaded successfully]
+[2024-11-15 20:23:27,408: INFO: common: yaml file: prompts.yaml loaded successfully]
+[2024-11-15 20:23:27,408: INFO: common: created directory at: evaluation]
+[2024-11-15 20:23:27,408: INFO: common: created directory at: evaluation/metrics]
+[2024-11-15 20:23:27,408: INFO: common: created directory at: evaluation/results]
+[2024-11-15 20:23:27,408: INFO: common: created directory at: evaluation/testset]
+[2024-11-15 20:23:27,408: INFO: common: created directory at: cache]
+[2024-11-15 20:23:27,408: INFO: common: created directory at: cache/faiss]
+[2024-11-15 20:23:27,408: INFO: common: created directory at: cache/meta]
+[2024-11-15 20:23:32,747: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:23:32,747: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:23:35,397: INFO: loader: Loading faiss.]
+[2024-11-15 20:23:35,409: INFO: loader: Successfully loaded faiss.]
+[2024-11-15 20:23:35,954: INFO: SentenceTransformer: Use pytorch device_name: mps]
+[2024-11-15 20:23:35,954: INFO: SentenceTransformer: Load pretrained SentenceTransformer: all-MiniLM-L6-v2]
+[2024-11-15 20:23:45,526: INFO: common: parquet file saved at: evaluation/results/base.parquet]
+[2024-11-15 20:23:45,527: INFO: common: parquet file saved at: evaluation/results/base-results.parquet]
+[2024-11-15 20:23:45,529: INFO: common: json file saved at: evaluation/metrics/base-scores.json]
+[2024-11-15 20:23:53,283: INFO: main: >>>>>> stage Model Evaluation completed <<<<<<
+
+]

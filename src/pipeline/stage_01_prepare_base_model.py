@@ -6,7 +6,6 @@ from src import logger
 
 STAGE_NAME = "Create LangGraph Workflow"
 
-
 class PrepareBaseTrainingPipeline:
     def __init__(self):
         pass

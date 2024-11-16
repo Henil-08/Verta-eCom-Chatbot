@@ -1,6 +1,7 @@
 import os
 from box.exceptions import BoxValueError
 import yaml
+from pandas import DataFrame
 from src import logger
 import json
 import joblib
@@ -49,6 +50,19 @@ def create_directories(path_to_directories: list, verbose=True):
         os.makedirs(path, exist_ok=True)
         if verbose:
             logger.info(f"created directory at: {path}")
+
+@ensure_annotations
+def save_parquet(path: Path, data: DataFrame):
+    """save json data
+
+    Args:
+        path (Path): path to parquet file
+        data (DataFrame): data to be saved in parquet file
+    """
+    data.to_parquet(path)
+
+    logger.info(f"parquet file saved at: {path}")
+
 
 
 @ensure_annotations

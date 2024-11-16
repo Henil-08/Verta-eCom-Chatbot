@@ -16,8 +16,15 @@ class ConfigurationManager:
 
     def get_prepare_base_model_config(self) -> PrepareBaseModelConfig:
         config = self.config.prepare_base_model
+
+        create_directories([config.cache_dir])
+        create_directories([config.faiss_dir])
+        create_directories([config.meta_dir])
         
         prepare_base_model_config = PrepareBaseModelConfig(
+            cache_dir=config.cache_dir,
+            faiss_dir=config.faiss_dir,
+            meta_dir=config.meta_dir,
             supervisor_model=config.supervisor_model,
             metadata_model=config.metadata_model,
             base_model=config.base_model,
@@ -50,6 +57,7 @@ class ConfigurationManager:
             metrics_path=Path(config.metrics_path),
             results_path=Path(config.results_path),
             testset_path=Path(config.testset_path),
+            file_hash=Path(config.file_hash),
             lc_model="src/graph.py",
             artifact_path="langgraph",
             pip_requirements="requirements.txt",

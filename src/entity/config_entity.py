@@ -4,6 +4,9 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class PrepareBaseModelConfig:
+    cache_dir: Path
+    faiss_dir: Path
+    meta_dir: Path
     supervisor_model: str
     metadata_model: str
     base_model: str
@@ -20,6 +23,7 @@ class EvaluationConfig:
     metrics_path: Path
     results_path: Path
     testset_path: Path
+    file_hash: Path
     lc_model: str
     artifact_path: str
     pip_requirements: str

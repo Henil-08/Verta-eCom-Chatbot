@@ -1,5 +1,6 @@
 from src import logger
 from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
+from src.pipeline.stage_02_model_evaluation import ModelEvaluationPipeline
 
 import os
 from dotenv import load_dotenv
@@ -9,22 +10,16 @@ load_dotenv()
 os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
 os.environ['OPENAI_API_KEY']=os.getenv("OPENAI_API_KEY")
 os.environ['GROQ_API_KEY']=os.getenv("GROQ_API_KEY")
-
-## Langfuse
 os.environ['LANGFUSE_PUBLIC_KEY']=os.getenv("LANGFUSE_PUBLIC_KEY")
 os.environ['LANGFUSE_SECRET_KEY']=os.getenv("LANGFUSE_SECRET_KEY")
 os.environ['LANGFUSE_HOST']=os.getenv("LANGFUSE_HOST")
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["MLFLOW_TRACKING_URI"]=os.getenv("MLFLOW_TRACKING_URI")
+os.environ["MLFLOW_TRACKING_USERNAME"]=os.getenv("MLFLOW_TRACKING_USERNAME")
+os.environ["MLFLOW_TRACKING_PASSWORD"]=os.getenv("MLFLOW_TRACKING_PASSWORD")
 
-## Postgres DB
-credentials = {
-    'INSTANCE_CONNECTION_NAME': os.getenv("INSTANCE_CONNECTION_NAME"),
-    'DB_USER': os.getenv("DB_USER"),
-    'DB_PASS': os.getenv("DB_PASS"),
-    'DB_NAME': os.getenv("DB_NAME")
-}
 
 STAGE_NAME = "Create LangGraph Workflow"
-
 try:
     logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
     prepare_base = PrepareBaseTrainingPipeline()
@@ -32,8 +27,19 @@ try:
     response = app.invoke({'question': 'Hello!', 
                            "meta_data": '',
                            "retriever": ''})
-    print(response['answer'].content)
-    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
+    if(response['answer'].content):
+        logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
 except Exception as e:
     logger.exception(e)
     raise e 
+
+
+STAGE_NAME = "Model Evaluation"
+try:
+    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+    eval = ModelEvaluationPipeline(app)
+    eval.evaluate()
+    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
+except Exception as e:
+    logger.exception(e)
+    raise e
