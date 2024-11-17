@@ -81,6 +81,7 @@ jobs:
             MLFLOW_TRACKING_URI = ${{ vars.MLFLOW_TRACKING_URI }}
             MLFLOW_TRACKING_USERNAME = ${{ vars.MLFLOW_TRACKING_USERNAME }}
             MLFLOW_TRACKING_PASSWORD = ${{ vars.MLFLOW_TRACKING_PASSWORD }}
+            VERTA_API_ACCESS_TOKEN = ${{ vars.VERTA_API_ACCESS_TOKEN }}
 
       - name: 'Show output'
         run: echo ${{ steps.deploy.outputs.url }}
