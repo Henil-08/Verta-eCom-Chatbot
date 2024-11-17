@@ -8,9 +8,9 @@ on:
 
 env:
   PROJECT_ID: 'verta-441204'
-  GAR_NAME: 'verta-chat'
+  GAR_NAME: 'verta-chat-api'
   GAR_LOCATION: "us-east1"
-  SERVICE: 'verta-service'
+  SERVICE: 'verta-chat-service'
   REGION: "us-east1"
 
 
