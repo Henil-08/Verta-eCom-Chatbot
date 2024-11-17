@@ -1,14 +1,21 @@
 import uuid
 import json
+import uvicorn
 from typing import Any
 from datetime import datetime
 from collections.abc import AsyncGenerator
 from langfuse.callback import CallbackHandler
 
-import uvicorn
-from fastapi import FastAPI, HTTPException, status, Query, Request
+from fastapi import (FastAPI, 
+                     HTTPException, 
+                     status,
+                     Depends, 
+                     Query, 
+                     Body,
+                     Request)
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from src.config.configuration import ConfigurationManager
 from src.pydantic.models import Payload, scoreTrace
@@ -32,6 +39,10 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["MLFLOW_TRACKING_URI"]=os.getenv("MLFLOW_TRACKING_URI")
 os.environ["MLFLOW_TRACKING_USERNAME"]=os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"]=os.getenv("MLFLOW_TRACKING_PASSWORD")
+VERTA_API_ACCESS_TOKEN = os.environ["VERTA_API_ACCESS_TOKEN"]
+
+# Use HTTPBearer as the security scheme
+bearer_scheme = HTTPBearer()
 
 app = FastAPI()
 
@@ -43,6 +54,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
+    token = credentials.credentials
+    if token != VERTA_API_ACCESS_TOKEN:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return token
 
 class ClientApp:
     def __init__(self):
@@ -117,19 +137,25 @@ async def log_requests(request: Request, call_next):
 
 
 @app.get("/")
-async def root():
+async def health():
     return {"message": "Welcome to the Verta FastAPI app!"}
 
 
 @app.get("/initialize")
-async def initialize(asin: str = Query(...), user_id: int = Query(...)):
+async def initialize(
+    token: str = Depends(verify_token),
+    asin: str = Query(...), user_id: int = Query(...)
+):
     logger.info(f"Received request to initialize retriever for ASIN: {asin} and User ID: {user_id}")
     await clapp.generate.initialize(asin, user_id)
     return JSONResponse(content={"status": "retriever initialized", "asin": asin, "user_id": user_id}, status_code=200)
 
 
 @app.post("/score")
-async def annotate(score: scoreTrace):
+async def annotate(
+    token: str = Depends(verify_token),
+    score: scoreTrace = Body(..., description="json for scoring feedback"), 
+):
     try:
         clapp.generate.score_feedback(score)
         return JSONResponse(content={"status": "Feedback Successful", "trace_id": score.trace_id}, status_code=200)
@@ -139,7 +165,10 @@ async def annotate(score: scoreTrace):
 
 
 @app.post("/dev-invoke")
-async def invoke(payload: Payload):
+async def invoke(
+    token: str = Depends(verify_token),
+    payload: Payload = Body(..., description="json for user query"), 
+):
     logger.info(f"Received request to invoke agent for ASIN: {payload.parent_asin} and User ID: {payload.user_id}")
     
     asin = payload.parent_asin
@@ -172,8 +201,8 @@ async def invoke(payload: Payload):
             "meta_data": str(metadata_path),
             "retriever": str(retriever_path)
         }, config=config)
-        logger.info(f"Agent response generated for User ID: {payload.user_id}")
 
+        logger.info(f"Agent response generated for User ID: {payload.user_id}")
         output = {
             'run_id': run_id,
             'question': response['question'],
@@ -259,7 +288,7 @@ async def message_generator(payload: Payload, stream_tokens=True) -> AsyncGenera
                 "answer": answer,
                 "followup_questions": followup_questions
             }
-            logger.info(f"Yielding final response for question: {payload.payload}")
+            logger.info(f"Yielding final response for User ID: {payload.user_id}")
             logger.debug(f"Final response: {output}")
             yield f"data: {json.dumps({'type': 'message', 'content': output})}\n\n"
 
@@ -282,7 +311,10 @@ def _sse_response_example() -> dict[int, Any]:
 
 
 @app.post("/dev-stream", response_class=StreamingResponse, responses=_sse_response_example())
-async def stream_agent(payload: Payload) -> StreamingResponse:
+async def stream_agent(
+    token: str = Depends(verify_token),
+    payload: Payload = Body(..., description="json for user query"),
+) -> StreamingResponse:
     """
     Stream the agent's response to a user input, including intermediate messages and tokens.
 

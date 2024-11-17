@@ -9,8 +9,8 @@ stages:
       size: 529
     - path: src/pipeline/stage_01_prepare_base_model.py
       hash: md5
-      md5: 8b3a1566128affb0f7de152329a8ca7e
-      size: 1698
+      md5: 4a271731f4cc04518b39a03a3576d7b8
+      size: 1609
   test_ingestion:
     cmd: python src/pipeline/stage_02_test_data_ingestion.py
     deps:
