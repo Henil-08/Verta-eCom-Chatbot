@@ -143,7 +143,7 @@ async def health():
 
 @app.get("/initialize")
 async def initialize(
-    # token: str = Depends(verify_token),
+    token: str = Depends(verify_token),
     asin: str = Query(...), user_id: int = Query(...)
 ):
     logger.info(f"Received request to initialize retriever for ASIN: {asin} and User ID: {user_id}")
@@ -153,7 +153,7 @@ async def initialize(
 
 @app.post("/score")
 async def annotate(
-    # token: str = Depends(verify_token),
+    token: str = Depends(verify_token),
     score: scoreTrace = Body(..., description="json for scoring feedback"), 
 ):
     try:
@@ -166,7 +166,7 @@ async def annotate(
 
 @app.post("/dev-invoke")
 async def invoke(
-    # token: str = Depends(verify_token),
+    token: str = Depends(verify_token),
     payload: Payload = Body(..., description="json for user query"), 
 ):
     logger.info(f"Received request to invoke agent for ASIN: {payload.parent_asin} and User ID: {payload.user_id}")
@@ -312,7 +312,7 @@ def _sse_response_example() -> dict[int, Any]:
 
 @app.post("/dev-stream", response_class=StreamingResponse, responses=_sse_response_example())
 async def stream_agent(
-    # token: str = Depends(verify_token),
+    token: str = Depends(verify_token),
     payload: Payload = Body(..., description="json for user query"),
 ) -> StreamingResponse:
     """
