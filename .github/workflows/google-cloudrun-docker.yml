@@ -2,14 +2,14 @@ name: 'Build and Deploy to Cloud Run'
 
 on:
   push:
-    branches: ["dev"]
+    branches: ["staging"]
     paths-ignore:
       - 'README.md'
 
 env:
-  PROJECT_ID: 'ecom-chat-437005'
+  PROJECT_ID: 'verta-441204'
   GAR_NAME: 'verta-chat'
-  GAR_LOCATION: "us-east1" 
+  GAR_LOCATION: "us-east1"
   SERVICE: 'verta-service'
   REGION: "us-east1"
 
@@ -81,6 +81,7 @@ jobs:
             MLFLOW_TRACKING_URI = ${{ vars.MLFLOW_TRACKING_URI }}
             MLFLOW_TRACKING_USERNAME = ${{ vars.MLFLOW_TRACKING_USERNAME }}
             MLFLOW_TRACKING_PASSWORD = ${{ vars.MLFLOW_TRACKING_PASSWORD }}
+            VERTA_API_ACCESS_TOKEN = ${{ vars.VERTA_API_ACCESS_TOKEN }}
 
       - name: 'Show output'
         run: echo ${{ steps.deploy.outputs.url }}
