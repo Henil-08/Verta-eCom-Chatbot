@@ -21,7 +21,6 @@ from src.config.configuration import ConfigurationManager
 from src.pydantic.models import Payload, scoreTrace
 from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
 from src.pipeline.generation import Generate
-
 from src import logger
 
 import os
@@ -41,10 +40,10 @@ os.environ["MLFLOW_TRACKING_USERNAME"]=os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"]=os.getenv("MLFLOW_TRACKING_PASSWORD")
 VERTA_API_ACCESS_TOKEN = os.environ["VERTA_API_ACCESS_TOKEN"]
 
+app = FastAPI()
+
 # Use HTTPBearer as the security scheme
 bearer_scheme = HTTPBearer()
-
-app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -157,10 +156,10 @@ async def annotate(
     score: scoreTrace = Body(..., description="json for scoring feedback"), 
 ):
     try:
-        clapp.generate.score_feedback(score)
-        return JSONResponse(content={"status": "Feedback Successful", "trace_id": score.trace_id}, status_code=200)
+        response = await clapp.generate.score_feedback(score)
+        return response
     except Exception as e:
-        logger.error(f"Error Scoring Trace: {score.trace_id} - {e}")
+        logger.error(f"Error Scoring Trace: {score.run_id} - {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -272,7 +271,7 @@ async def message_generator(payload: Payload, stream_tokens=True) -> AsyncGenera
                 logger.debug(f"Streaming token: {content}")
                 yield f"data: {json.dumps({'type': 'token', 'content': content})}\n\n"
             continue
-
+        
         # Yield messages written to the graph state after node execution finishes.
         if (
             (event["event"] == "on_chain_end")
@@ -312,6 +311,7 @@ def _sse_response_example() -> dict[int, Any]:
 
 @app.post("/dev-stream", response_class=StreamingResponse, responses=_sse_response_example())
 async def stream_agent(
+    token: str = Depends(verify_token),
     payload: Payload = Body(..., description="json for user query"),
 ) -> StreamingResponse:
     """

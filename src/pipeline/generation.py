@@ -8,6 +8,7 @@ from datetime import datetime
 from sqlalchemy import text
 from langfuse import Langfuse
 from pandas import DataFrame
+from fastapi.responses import JSONResponse
 from langchain_community.document_loaders import DataFrameLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -22,6 +23,7 @@ class Generate:
         self.config = config
         self.vector_store_cache = []
         self.cache_creation_times = {}
+        self.langfuse = Langfuse()
 
 
     def load_test_data(self):
@@ -113,15 +115,15 @@ class Generate:
             return retriever_path, metadata_path
 
 
-    def score_feedback(self, score: scoreTrace):
+    async def score_feedback(self, score: scoreTrace):
         trace_id = score.run_id
         user_id = score.user_id
         asin = score.parent_asin
         value = score.value
         id = str(uuid.uuid4()) + f"-{user_id}-{asin}"
         
-        langfuse = Langfuse()
-        langfuse.score(
+        
+        self.langfuse.score(
             id=id,
             trace_id=trace_id,
             name="user-feedback",
@@ -129,6 +131,8 @@ class Generate:
             data_type="BOOLEAN" 
         )
         logger.info(f"Feedback Successful, 'trace_id': {trace_id}, 'id': {id}")
+        
+        return JSONResponse(content={"status": "Feedback Successful", "trace_id": trace_id}, status_code=200)
 
 
     @staticmethod

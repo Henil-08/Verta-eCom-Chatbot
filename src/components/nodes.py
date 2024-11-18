@@ -61,7 +61,7 @@ def followup_node(state: MultiAgentState, prompt, model):
                 )
     
     followup_chain = follow_prompt | llm
-    followup = followup_chain.invoke({'question': question, 'answer': answer, 'context': documents[-2:]}) # just consider last two document list 
+    followup = followup_chain.invoke({'question': question, 'answer': answer.content, 'context': documents[-2:]}) # just consider last two document list 
     followup_questions = followup.content.split('\n')
     
     return {"question": question, "answer": answer, "documents": documents, 'followup_questions': followup_questions}       
