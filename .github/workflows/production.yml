@@ -1,10 +1,9 @@
 name: 'Prod Workflow'
 
 on:
-  workflow_run: 
-    workflows: ["Staging Workflow"]
-    types:
-      - completed
+  push: 
+    branches: 
+      - production
 
 env:
   PROJECT_ID: 'verta-441204'
@@ -32,6 +31,24 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
+
+      - name: Fetch all branches
+        run: git fetch --all
+      
+      - name: Check if Prouction is up-to-date with Staging
+        id: check_merge
+        run: |
+          # Check for any unmerged commits from staging
+          git fetch origin staging
+          STAGING_LATEST_COMMIT=$(git rev-parse origin/staging)
+          PROD_MERGED_COMMIT=$(git merge-base HEAD origin/staging)
+          
+          if [ "$STAGING_LATEST_COMMIT" != "$PROD_MERGED_COMMIT" ]; then
+            echo "Production branch is not up-to-date with Staging. Aborting deployment."
+            exit 1
+          else
+            echo "Production branch is up-to-date with Staging. Proceeding with CI/CD."
+          fi
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
