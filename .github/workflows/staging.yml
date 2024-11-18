@@ -4,8 +4,6 @@ on:
   push:
     branches: 
     - staging
-    paths-ignore:
-    - 'README.md'
 
 env:
   PROJECT_ID: 'verta-441204'
