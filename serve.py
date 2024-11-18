@@ -312,7 +312,6 @@ def _sse_response_example() -> dict[int, Any]:
 
 @app.post("/dev-stream", response_class=StreamingResponse, responses=_sse_response_example())
 async def stream_agent(
-    token: str = Depends(verify_token),
     payload: Payload = Body(..., description="json for user query"),
 ) -> StreamingResponse:
     """
