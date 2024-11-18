@@ -3,6 +3,7 @@
 ## Overview
 This project outlines a structured workflow for handling customer queries by routing them through various agents. Verta now uses a PostgreSQL database hosted on SQL Server on Google Cloud Platform (GCP) for storing and retrieving product information. The chatbot includes agents such as a SQL-Agent, which retrieves product details and customer reviews from the PostgreSQL database, and a vectorstore for retrieving additional context from product metadata and user reviews. If these sources do not provide a sufficient answer, Verta generates responses using additional data sources to ensure that customers receive clear, concise, and insightful information.
 
+
 ## Installation and Setup
 ### Prerequisites
 
