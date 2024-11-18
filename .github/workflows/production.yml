@@ -61,7 +61,7 @@ jobs:
 
       - name: 'Deploy to Cloud Run'
         run: |-
-          gcloud run deploy ${{env.APP_NAME}} \
+          gcloud run deploy ${{env.SERVICE}} \
             --image="us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}" \
             --port=${{env.PORT}} \ 
             --allow-unauthenticated 
