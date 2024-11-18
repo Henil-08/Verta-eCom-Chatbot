@@ -34,6 +34,24 @@ jobs:
       - name: Checkout Code
         uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
 
+      - name: Fetch all branches
+        run: git fetch --all
+      
+      - name: Check if Staging is up-to-date with Dev
+        id: check_merge
+        run: |
+          # Check for any unmerged commits from dev
+          git fetch origin dev
+          DEV_LATEST_COMMIT=$(git rev-parse origin/dev)
+          STAGING_MERGED_COMMIT=$(git merge-base HEAD origin/dev)
+          
+          if [ "$DEV_LATEST_COMMIT" != "$STAGING_MERGED_COMMIT" ]; then
+            echo "Staging branch is not up-to-date with Dev. Aborting deployment."
+            exit 1
+          else
+            echo "Staging branch is up-to-date with dev. Proceeding with CI/CD."
+          fi
+
       - name: Lint code
         run: echo "Linting repository"
 
