@@ -1,10 +1,9 @@
-name: 'Build and Deploy to Cloud Run'
+name: 'Staging Workflow'
 
 on:
   push:
     branches: 
     - staging
-    - production
     paths-ignore:
     - 'README.md'
 
@@ -72,58 +71,3 @@ jobs:
 
       - name: 'Show output'
         run: echo ${{ steps.delivery.outputs.url }}
-  
-  development:
-    name: 'Continuous Development'
-    if: github.ref == 'refs/heads/production'
-    needs: delivery
-    runs-on: 'ubuntu-latest'
-    
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-    
-    steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
-
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-
-      - name: 'Docker Auth'
-        run: |-
-          gcloud auth configure-docker "us-east1-docker.pkg.dev"
-
-      - name: 'Deploy to Cloud Run'
-        run: |-
-          gcloud run deploy ${{env.APP_NAME}} \
-            --image="us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}" \
-            --port=${{env.PORT}} \ 
-            --allow-unauthenticated 
-            --project=${{env.PROJECT_ID}} \
-            --region=${{env.REGION}} \
-            --memory=${{env.MEMORY}} \
-            --cpu=${{env.CPU}} \
-            --timeout=${{env.TIMEOUT}} \ 
-            --max-instances=${{env.MAX_INSTANCES}} \
-            --min-instances=${{env.MIN_INSTANCES}} \ 
-            --set-env-vars OPENAI_API_KEY= ${{ vars.OPENAI_API_KEY }} \
-            --set-env-vars HF_TOKEN = ${{ vars.HF_TOKEN }} \
-            --set-env-vars GROQ_API_KEY = ${{ vars.GROQ_API_KEY }} \
-            --set-env-vars LANGFUSE_SECRET_KEY = ${{ vars.LANGFUSE_SECRET_KEY }} \
-            --set-env-vars LANGFUSE_PUBLIC_KEY = ${{ vars.LANGFUSE_PUBLIC_KEY }} \
-            --set-env-vars LANGFUSE_HOST = ${{ vars.LANGFUSE_HOST }} \
-            --set-env-vars DB_USER = ${{ vars.DB_USER }} \
-            --set-env-vars DB_PASS = ${{ vars.DB_PASS }} \
-            --set-env-vars DB_NAME = ${{ vars.DB_NAME }} \
-            --set-env-vars INSTANCE_CONNECTION_NAME = ${{ vars.INSTANCE_CONNECTION_NAME }} \
-            --set-env-vars MLFLOW_TRACKING_URI = ${{ vars.MLFLOW_TRACKING_URI }} \
-            --set-env-vars MLFLOW_TRACKING_USERNAME = ${{ vars.MLFLOW_TRACKING_USERNAME }} \
-            --set-env-vars MLFLOW_TRACKING_PASSWORD = ${{ vars.MLFLOW_TRACKING_PASSWORD }} \
-            --set-env-vars VERTA_API_ACCESS_TOKEN = ${{ vars.VERTA_API_ACCESS_TOKEN }} \
-
-      - name: 'Show output'
-        run: echo ${{ steps.development.outputs.url }}
