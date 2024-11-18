@@ -13,12 +13,6 @@ env:
   GAR_LOCATION: "us-east1"
   SERVICE: 'verta-chat-service'
   REGION: "us-east1"
-  TIMEOUT: 240s
-  PORT: 80
-  CPU: 4
-  MEMORY: 16Gi
-  MAX_INSTANCES: 10
-  MIN_INSTANCES: 1
 
 jobs:
   integration:
