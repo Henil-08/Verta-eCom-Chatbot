@@ -1,12 +1,10 @@
 name: 'Build and Deploy to Cloud Run'
 
 on:
-  push:
-    branches: 
-    - staging
-    - production
-    paths-ignore:
-    - 'README.md'
+  workflow_run: 
+    workflows: ["Staging Workflow"]
+    types:
+      - completed
 
 env:
   PROJECT_ID: 'verta-441204'
@@ -22,61 +20,9 @@ env:
   MIN_INSTANCES: 1
 
 jobs:
-  integration:
-    name: Continuous Integration
-    if: github.ref == 'refs/heads/staging'
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
-    steps:
-      - name: Checkout Code
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
-
-      - name: Lint code
-        run: echo "Linting repository"
-
-      - name: Run unit tests
-        run: echo "Running unit tests"
-
-  delivery:
-    name: Continuous Delivery
-    if: github.ref == 'refs/heads/staging'
-    needs: integration
-    runs-on: 'ubuntu-latest'
-
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
-    steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
-
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-
-      - name: 'Docker Auth'
-        run: |-
-          gcloud auth configure-docker "us-east1-docker.pkg.dev"
-  
-      - name: 'Build and Push Container'
-        run: |-
-          docker build -t "us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}" -f Dockerfile .
-          docker push "us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}"
-
-      - name: 'Show output'
-        run: echo ${{ steps.delivery.outputs.url }}
-  
   development:
     name: 'Continuous Development'
-    if: github.ref == 'refs/heads/production'
-    needs: delivery
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: 'ubuntu-latest'
     
     permissions:
