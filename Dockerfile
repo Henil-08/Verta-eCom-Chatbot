@@ -9,7 +9,7 @@ RUN pip install poetry
 COPY . /verta-chatbot
 
 RUN poetry config virtualenvs.create false 
-RUN poetry install --no-dev --no-root --verbose
+RUN poetry install --only main --no-root --verbose
 
 ENV HOST 0.0.0.0
 ENV PORT 80
