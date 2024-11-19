@@ -1,0 +1,36 @@
+beautifulsoup4
+faiss-cpu
+wandb
+pypdf
+python-dotenv
+langfuse
+streamlit
+ragas == 0.1.21
+nltk
+nest-asyncio
+scikit-learn
+ipykernel
+dvc
+fastapi
+uvicorn
+datasets
+langchain-groq
+google-cloud-bigquery
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+db-dtypes
+langchain
+langchain-community
+email-validator >= 2.0
+langgraph
+langchain-huggingface
+langchain-openai
+cloud-sql-python-connector
+pg8000
+sqlalchemy
+mlflow
+ipykernel
+dagshub
+ensure
+python-box 

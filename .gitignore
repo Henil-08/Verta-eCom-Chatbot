@@ -1,9 +1,6 @@
 .env
-verta
-**.json
-cache
-**/__pycache__
 .venv
-**/mlruns
 cache
-**/__pycache__/
+**.json
+**/__pycache__
+**/mlruns

@@ -109,7 +109,7 @@ FOLLOWUP_PROMPT: |
   Context: {context}
   Please generate three possible follow-up questions that the user might ask, each on a new line, without any numbering or bullet points. 
   Do not include any explanations—just list the follow-up questions.
-  Compulsory Format them like this - after generated question 1 there should be '\n' and then question 2 then '\n' and then question 3 in one line like this:
-  question1\nquestion2\nquestion3
+  Compulsory Format them like this - after generated question 1 there should be '\\n' and then question 2 then '\\n' and then question 3 in one line like this:
+  question1\\nquestion2\\nquestion3
 
   

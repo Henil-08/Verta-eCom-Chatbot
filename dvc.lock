@@ -36,9 +36,9 @@ stages:
       size: 529
     - path: evaluation/testset
       hash: md5
-      md5: 5919523e70da3523764ac59b9f0d256a.dir
-      size: 13234
-      nfiles: 1
+      md5: 5daa7c0b8f21091de44624ac5fed49db.dir
+      size: 287656
+      nfiles: 31
     - path: src/pipeline/stage_03_model_evaluation.py
       hash: md5
       md5: 28a8e81a5b9a673114cd4a6d4b217846
@@ -46,5 +46,5 @@ stages:
     outs:
     - path: evaluation/metrics/base-scores.json
       hash: md5
-      md5: cb604aef9924609a5fa47022c6a89339
-      size: 357
+      md5: 1b4977812ac97ad9967178a327104fa7
+      size: 426

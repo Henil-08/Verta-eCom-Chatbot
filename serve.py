@@ -1,49 +1,44 @@
-import uuid
 import json
-import uvicorn
-from typing import Any
-from datetime import datetime
+import os
+import uuid
 from collections.abc import AsyncGenerator
+from datetime import datetime
+from typing import Any
+
+import uvicorn
+from dotenv import load_dotenv
+from fastapi import Body, Depends, FastAPI, HTTPException, Query, Request, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from langfuse.callback import CallbackHandler
 
-from fastapi import (FastAPI, 
-                     HTTPException, 
-                     status,
-                     Depends, 
-                     Query, 
-                     Body,
-                     Request)
-from fastapi.responses import StreamingResponse, JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
-from src.config.configuration import ConfigurationManager
-from src.pydantic.models import Payload, scoreTrace
-from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
-from src.pipeline.generation import Generate
 from src import logger
+from src.config.configuration import ConfigurationManager
+from src.pipeline.generation import Generate
+from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
+from src.pydantic.models import Payload, scoreTrace
 
-import os
-from dotenv import load_dotenv
 load_dotenv()
 
-## load the API Keys
-os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
-os.environ['OPENAI_API_KEY']=os.getenv("OPENAI_API_KEY")
-os.environ['GROQ_API_KEY']=os.getenv("GROQ_API_KEY")
-os.environ['LANGFUSE_PUBLIC_KEY']=os.getenv("LANGFUSE_PUBLIC_KEY")
-os.environ['LANGFUSE_SECRET_KEY']=os.getenv("LANGFUSE_SECRET_KEY")
-os.environ['LANGFUSE_HOST']=os.getenv("LANGFUSE_HOST")
+# load the API Keys
+os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN")
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
+os.environ["LANGFUSE_PUBLIC_KEY"] = os.getenv("LANGFUSE_PUBLIC_KEY")
+os.environ["LANGFUSE_SECRET_KEY"] = os.getenv("LANGFUSE_SECRET_KEY")
+os.environ["LANGFUSE_HOST"] = os.getenv("LANGFUSE_HOST")
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ["MLFLOW_TRACKING_URI"]=os.getenv("MLFLOW_TRACKING_URI")
-os.environ["MLFLOW_TRACKING_USERNAME"]=os.getenv("MLFLOW_TRACKING_USERNAME")
-os.environ["MLFLOW_TRACKING_PASSWORD"]=os.getenv("MLFLOW_TRACKING_PASSWORD")
+os.environ["MLFLOW_TRACKING_URI"] = os.getenv("MLFLOW_TRACKING_URI")
+os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
+os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 VERTA_API_ACCESS_TOKEN = os.environ["VERTA_API_ACCESS_TOKEN"]
 
 app = FastAPI()
 
 # Use HTTPBearer as the security scheme
 bearer_scheme = HTTPBearer()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,6 +47,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
     token = credentials.credentials
@@ -63,6 +59,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(bearer_sche
         )
     return token
 
+
 class ClientApp:
     def __init__(self):
         config = ConfigurationManager()
@@ -73,6 +70,9 @@ class ClientApp:
         self.app = prepare_base.graph()
 
 
+clapp = ClientApp()
+
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     # Start time
@@ -81,16 +81,16 @@ async def log_requests(request: Request, call_next):
 
     # End time
     process_time = (datetime.now() - start_time).total_seconds()
-    
+
     log_data = {
         "timestamp": datetime.now().isoformat(),
         "method": request.method,
         "url": str(request.url),
         "status_code": response.status_code,
         "process_time": process_time,
-        "client_ip": request.client.host
+        "client_ip": request.client.host,
     }
-    
+
     # Send log to Google Cloud Logging or stdout for Cloud Run to capture
     logger.info(json.dumps(log_data))
     return response
@@ -143,17 +143,23 @@ async def health():
 @app.get("/initialize")
 async def initialize(
     token: str = Depends(verify_token),
-    asin: str = Query(...), user_id: int = Query(...)
+    asin: str = Query(...),
+    user_id: int = Query(...),
 ):
-    logger.info(f"Received request to initialize retriever for ASIN: {asin} and User ID: {user_id}")
+    logger.info(
+        f"Received request to initialize retriever for ASIN: {asin} and User ID: {user_id}"
+    )
     await clapp.generate.initialize(asin, user_id)
-    return JSONResponse(content={"status": "retriever initialized", "asin": asin, "user_id": user_id}, status_code=200)
+    return JSONResponse(
+        content={"status": "retriever initialized", "asin": asin, "user_id": user_id},
+        status_code=200,
+    )
 
 
 @app.post("/score")
 async def annotate(
     token: str = Depends(verify_token),
-    score: scoreTrace = Body(..., description="json for scoring feedback"), 
+    score: scoreTrace = Body(..., description="json for scoring feedback"),
 ):
     try:
         response = await clapp.generate.score_feedback(score)
@@ -166,23 +172,35 @@ async def annotate(
 @app.post("/dev-invoke")
 async def invoke(
     token: str = Depends(verify_token),
-    payload: Payload = Body(..., description="json for user query"), 
+    payload: Payload = Body(..., description="json for user query"),
 ):
-    logger.info(f"Received request to invoke agent for ASIN: {payload.parent_asin} and User ID: {payload.user_id}")
-    
+    logger.info(
+        f"Received request to invoke agent for ASIN: {payload.parent_asin} and User ID: {payload.user_id}"
+    )
+
     asin = payload.parent_asin
     user_id = payload.user_id
     cache_key = f"{user_id}-{asin}"
 
     # Ensure paths exist
-    retriever_path, metadata_path = await clapp.generate.initialize(asin, user_id, returnPath=True)
+    retriever_path, metadata_path = await clapp.generate.initialize(
+        asin, user_id, returnPath=True
+    )
 
     if not os.path.exists(retriever_path):
-        logger.error(f"Retriever not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}")
-        return JSONResponse(content={"status": "Retriever not initialized"}, status_code=400)
+        logger.error(
+            f"Retriever not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}"
+        )
+        return JSONResponse(
+            content={"status": "Retriever not initialized"}, status_code=400
+        )
     if not os.path.exists(metadata_path):
-        logger.error(f"Meta-Data not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}")
-        return JSONResponse(content={"status": "Meta-Data not initialized"}, status_code=400)
+        logger.error(
+            f"Meta-Data not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}"
+        )
+        return JSONResponse(
+            content={"status": "Meta-Data not initialized"}, status_code=400
+        )
 
     agent = clapp.app
     config = {"configurable": {"thread_id": f"{cache_key}"}}
@@ -190,23 +208,25 @@ async def invoke(
     if payload.log_langfuse:
         run_id = str(uuid.uuid4())
         langfuse_handler = CallbackHandler(
-            user_id=f"{payload.user_id}",
-            session_id=f"{cache_key}"
+            user_id=f"{payload.user_id}", session_id=f"{cache_key}"
         )
         config.update({"callbacks": [langfuse_handler], "run_id": run_id})
     try:
-        response = await agent.ainvoke({
-            "question": payload.query, 
-            "meta_data": str(metadata_path),
-            "retriever": str(retriever_path)
-        }, config=config)
+        response = await agent.ainvoke(
+            {
+                "question": payload.query,
+                "meta_data": str(metadata_path),
+                "retriever": str(retriever_path),
+            },
+            config=config,
+        )
 
         logger.info(f"Agent response generated for User ID: {payload.user_id}")
         output = {
-            'run_id': run_id,
-            'question': response['question'],
-            'answer': response['answer'].content,
-            'followup_questions': response['followup_questions']
+            "run_id": run_id,
+            "question": response["question"],
+            "answer": response["answer"].content,
+            "followup_questions": response["followup_questions"],
         }
         logger.debug(f"Final response: {output}")
         return output
@@ -215,7 +235,9 @@ async def invoke(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-async def message_generator(payload: Payload, stream_tokens=True) -> AsyncGenerator[str, None]:
+async def message_generator(
+    payload: Payload, stream_tokens=True
+) -> AsyncGenerator[str, None]:
     """
     Generate a stream of messages from the agent.
 
@@ -227,34 +249,48 @@ async def message_generator(payload: Payload, stream_tokens=True) -> AsyncGenera
     logger.info(f"Initializing message generator for cache key: {cache_key}")
 
     # Ensure paths exist
-    retriever_path, metadata_path = await clapp.generate.initialize(asin, user_id, returnPath=True)
+    retriever_path, metadata_path = await clapp.generate.initialize(
+        asin, user_id, returnPath=True
+    )
 
     if not os.path.exists(retriever_path):
-        logger.error(f"Retriever not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}")
-        yield JSONResponse(content={"status": "Retriever not initialized"}, status_code=400)
+        logger.error(
+            f"Retriever not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}"
+        )
+        yield JSONResponse(
+            content={"status": "Retriever not initialized"}, status_code=400
+        )
     if not os.path.exists(metadata_path):
-        logger.error(f"Meta-Data not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}")
-        yield JSONResponse(content={"status": "Meta-Data not initialized"}, status_code=400)
+        logger.error(
+            f"Meta-Data not initialized for ASIN: {payload.parent_asin} and User ID: {payload.user_id}"
+        )
+        yield JSONResponse(
+            content={"status": "Meta-Data not initialized"}, status_code=400
+        )
 
     agent = clapp.app
     config = {"configurable": {"thread_id": f"{cache_key}"}}
     if payload.log_langfuse:
         run_id = str(uuid.uuid4())
         langfuse_handler = CallbackHandler(
-            user_id=f"{payload.user_id}",
-            session_id=f"{cache_key}"
+            user_id=f"{payload.user_id}", session_id=f"{cache_key}"
         )
         config.update({"callbacks": [langfuse_handler], "run_id": run_id})
     if payload.stream_tokens == 0:
         stream_tokens = False
 
     logger.info("Starting event stream processing for agent.")
-    
+
     # Process streamed events from the graph and yield messages over the SSE stream.
-    async for event in agent.astream_events({"question": payload.query, 
-                                            "meta_data": str(metadata_path),
-                                            "retriever": str(retriever_path)
-                                        }, version="v2", config=config):
+    async for event in agent.astream_events(
+        {
+            "question": payload.query,
+            "meta_data": str(metadata_path),
+            "retriever": str(retriever_path),
+        },
+        version="v2",
+        config=config,
+    ):
         if not event:
             logger.warning("Received empty event in stream.")
             continue
@@ -263,29 +299,30 @@ async def message_generator(payload: Payload, stream_tokens=True) -> AsyncGenera
         if (
             event["event"] == "on_chat_model_stream"
             and stream_tokens == True
-            and any(t.startswith('seq:step:2') for t in event.get("tags", []))
-            and event['metadata']['langgraph_node'] == 'generate'
+            and any(t.startswith("seq:step:2") for t in event.get("tags", []))
+            and event["metadata"]["langgraph_node"] == "generate"
         ):
             content = event["data"]["chunk"].content
             if content:
                 logger.debug(f"Streaming token: {content}")
                 yield f"data: {json.dumps({'type': 'token', 'content': content})}\n\n"
             continue
-        
+
         # Yield messages written to the graph state after node execution finishes.
-        if (
-            (event["event"] == "on_chain_end")
-            and ((any(t.startswith('seq:step:2') for t in event.get("tags", [])))
-            and ((event['metadata']['langgraph_node'] == 'final')
-            and (event['metadata']['langgraph_triggers'] == ['generate'])))
+        if (event["event"] == "on_chain_end") and (
+            (any(t.startswith("seq:step:2") for t in event.get("tags", [])))
+            and (
+                (event["metadata"]["langgraph_node"] == "final")
+                and (event["metadata"]["langgraph_triggers"] == ["generate"])
+            )
         ):
             answer = event["data"]["output"]["answer"].content
             followup_questions = event["data"]["output"]["followup_questions"]
             output = {
-                'run_id': run_id,
+                "run_id": run_id,
                 "question": payload.query,
                 "answer": answer,
-                "followup_questions": followup_questions
+                "followup_questions": followup_questions,
             }
             logger.info(f"Yielding final response for User ID: {payload.user_id}")
             logger.debug(f"Final response: {output}")
@@ -309,7 +346,9 @@ def _sse_response_example() -> dict[int, Any]:
     }
 
 
-@app.post("/dev-stream", response_class=StreamingResponse, responses=_sse_response_example())
+@app.post(
+    "/dev-stream", response_class=StreamingResponse, responses=_sse_response_example()
+)
 async def stream_agent(
     token: str = Depends(verify_token),
     payload: Payload = Body(..., description="json for user query"),
@@ -324,6 +363,4 @@ async def stream_agent(
 
 
 if __name__ == "__main__":
-    clapp = ClientApp()
     uvicorn.run(app, host=str(os.getenv("HOST")), port=int(os.getenv("PORT")))
-
