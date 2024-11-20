@@ -69,9 +69,13 @@ jobs:
           DB_USER: ${{ vars.DB_USER }}
           DB_PASS: ${{ vars.DB_PASS }}
           DB_NAME: ${{ vars.DB_NAME }}
+          GOOGLE_APPLICATION_CREDENTIALS: '${{ secrets.GCP_SA_KEY }}'
           MLFLOW_TRACKING_URI: ${{ vars.MLFLOW_TRACKING_URI }}
           MLFLOW_TRACKING_USERNAME: ${{ vars.MLFLOW_TRACKING_USERNAME }}
           MLFLOW_TRACKING_PASSWORD: ${{ vars.MLFLOW_TRACKING_PASSWORD }}
+          VERTA_API_ACCESS_TOKEN: ${{ vars.VERTA_API_ACCESS_TOKEN }}
+          HOST: "0.0.0.0"
+          PORT: 80
         run: |-
           echo "Running unit tests"
           pytest test.py --junitxml=test-results.xml
