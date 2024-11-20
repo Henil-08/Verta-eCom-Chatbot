@@ -84,6 +84,31 @@ jobs:
         run: |-
           echo "Running unit tests for verta"
           pytest test.py --junitxml=test-results.xml
+      
+      - name: Run Verta Model Pipeline
+        env: 
+          HF_TOKEN: ${{ vars.HF_TOKEN }}
+          OPENAI_API_KEY: ${{ vars.OPENAI_API_KEY }}
+          GROQ_API_KEY: ${{ vars.GROQ_API_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ vars.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ vars.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
+          TOKENIZERS_PARALLELISM: "false"
+          INSTANCE_CONNECTION_NAME: ${{ vars.INSTANCE_CONNECTION_NAME }}
+          DB_USER: ${{ vars.DB_USER }}
+          DB_PASS: ${{ vars.DB_PASS }}
+          DB_NAME: ${{ vars.DB_NAME }}
+          GOOGLE_APPLICATION_CREDENTIALS: '/tmp/google-credentials.json'
+          MLFLOW_TRACKING_URI: ${{ vars.MLFLOW_TRACKING_URI }}
+          MLFLOW_TRACKING_USERNAME: ${{ vars.MLFLOW_TRACKING_USERNAME }}
+          MLFLOW_TRACKING_PASSWORD: ${{ vars.MLFLOW_TRACKING_PASSWORD }}
+          VERTA_API_ACCESS_TOKEN: ${{ vars.VERTA_API_ACCESS_TOKEN }}
+          HOST: "0.0.0.0"
+          PORT: 80
+        run: |-
+          echo "Running Model Pipeline"
+          dvc repro
+        
 
       - name: Clean up Google Credentials
         run: rm /tmp/google-credentials.json
