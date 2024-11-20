@@ -1,13 +1,13 @@
 stages:
   prepare_base_model:
-    cmd: python src/pipeline/stage_01_prepare_base_model.py
+    cmd: python -m src.pipeline.stage_01_prepare_base_model
     deps:
       - src/pipeline/stage_01_prepare_base_model.py
       - config/config.yaml
 
 
   test_ingestion:
-    cmd: python src/pipeline/stage_02_test_data_ingestion.py
+    cmd: python -m src.pipeline.stage_02_test_data_ingestion
     deps:
       - src/pipeline/stage_02_test_data_ingestion.py
       - config/config.yaml
@@ -16,7 +16,7 @@ stages:
 
 
   evaluation:
-    cmd: python src/pipeline/stage_03_model_evaluation.py
+    cmd: python -m src.pipeline.stage_03_model_evaluation
     deps:
       - src/pipeline/stage_03_model_evaluation.py
       - config/config.yaml

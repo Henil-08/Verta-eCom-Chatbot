@@ -1,10 +1,10 @@
-import nest_asyncio
-nest_asyncio.apply()
-
 from src import logger
 from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
 from src.pipeline.stage_02_test_data_ingestion import TestIngestionPipeline
 from src.pipeline.stage_03_model_evaluation import ModelEvaluationPipeline
+
+import nest_asyncio
+nest_asyncio.apply()
 
 import os
 from dotenv import load_dotenv
@@ -49,12 +49,12 @@ except Exception as e:
 #     raise e
 
 
-STAGE_NAME = "Model Evaluation"
-try:
-    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
-    eval = ModelEvaluationPipeline(app)
-    eval.evaluate()
-    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
-except Exception as e:
-    logger.exception(e)
-    raise e
+# STAGE_NAME = "Model Evaluation"
+# try:
+#     logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+#     eval = ModelEvaluationPipeline(app)
+#     eval.evaluate()
+#     logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
+# except Exception as e:
+#     logger.exception(e)
+#     raise e
