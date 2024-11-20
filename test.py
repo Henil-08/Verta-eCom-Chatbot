@@ -33,25 +33,11 @@ credentials = {
     "DB_NAME": os.getenv("DB_NAME"),
 }
 
-# Get the JSON string from the environment variable
-credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
-if not credentials_json:
-    raise EnvironmentError("GOOGLE_APPLICATION_CREDENTIALS_JSON not set")
-
-# Write the JSON content to a temporary file
-temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".json")
-with open(temp_file.name, 'w') as file:
-    json.dump(json.loads(credentials_json), file)
-
-# Set the GOOGLE_APPLICATION_CREDENTIALS variable to point to the temporary file
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = temp_file.name
-
 VERTA_API_ACCESS_TOKEN = os.environ["VERTA_API_ACCESS_TOKEN"]
 INVALID_TOKEN = "mock_invalid_token"
 
 configManager = ConfigurationManager()
 config = configManager.get_prepare_base_model_config()
-
 
 @pytest.fixture
 def valid_headers():
@@ -300,5 +286,3 @@ async def test_invalid_stream_endpoint(invalid_headers, test_payload):
             "/dev-stream", json=test_payload, headers=invalid_headers
         )
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-os.remove(temp_file.name)

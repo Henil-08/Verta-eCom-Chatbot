@@ -55,6 +55,11 @@ jobs:
           pip install poetry
           poetry config virtualenvs.create false
           poetry install --only main --no-root --verbose
+      
+      - name: Write Google Credentials
+        run: echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > /tmp/google-credentials.json
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_SA_KEY }}
 
       - name: Run unit tests
         env: 
@@ -69,7 +74,7 @@ jobs:
           DB_USER: ${{ vars.DB_USER }}
           DB_PASS: ${{ vars.DB_PASS }}
           DB_NAME: ${{ vars.DB_NAME }}
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_SA_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: '/tmp/google-credentials.json'
           MLFLOW_TRACKING_URI: ${{ vars.MLFLOW_TRACKING_URI }}
           MLFLOW_TRACKING_USERNAME: ${{ vars.MLFLOW_TRACKING_USERNAME }}
           MLFLOW_TRACKING_PASSWORD: ${{ vars.MLFLOW_TRACKING_PASSWORD }}
@@ -79,6 +84,9 @@ jobs:
         run: |-
           echo "Running unit tests for verta"
           pytest test.py --junitxml=test-results.xml
+
+      - name: Clean up Google Credentials
+        run: rm /tmp/google-credentials.json
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
