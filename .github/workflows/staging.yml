@@ -77,7 +77,7 @@ jobs:
           HOST: "0.0.0.0"
           PORT: 80
         run: |-
-          echo "Running unit tests"
+          echo "Running unit tests for verta"
           pytest test.py --junitxml=test-results.xml
 
       - name: Upload Test Results
