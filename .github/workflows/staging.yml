@@ -57,6 +57,18 @@ jobs:
           poetry install --only main --no-root --verbose
 
       - name: Run unit tests
+        env: 
+          HF_TOKEN: ${{ vars.HF_TOKEN }}
+          OPENAI_API_KEY: ${{ vars.OPENAI_API_KEY }}
+          GROQ_API_KEY: ${{ vars.GROQ_API_KEY }}
+          LANGFUSE_PUBLIC_KEY: ${{ vars.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ vars.LANGFUSE_SECRET_KEY }}
+          LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST }}
+          TOKENIZERS_PARALLELISM: "false"
+          INSTANCE_CONNECTION_NAME: ${{ vars.INSTANCE_CONNECTION_NAME }}
+          DB_USER: ${{ vars.DB_USER }}
+          DB_PASS: ${{ vars.DB_PASS }}
+          DB_NAME: ${{ vars.DB_NAME }}
         run: |-
           echo "Running unit tests"
           pytest test.py --junitxml=test-results.xml
