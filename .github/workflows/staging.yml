@@ -69,7 +69,7 @@ jobs:
           DB_USER: ${{ vars.DB_USER }}
           DB_PASS: ${{ vars.DB_PASS }}
           DB_NAME: ${{ vars.DB_NAME }}
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: '${{ secrets.GCP_SA_KEY }}'
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GCP_SA_KEY }}
           MLFLOW_TRACKING_URI: ${{ vars.MLFLOW_TRACKING_URI }}
           MLFLOW_TRACKING_USERNAME: ${{ vars.MLFLOW_TRACKING_USERNAME }}
           MLFLOW_TRACKING_PASSWORD: ${{ vars.MLFLOW_TRACKING_PASSWORD }}
