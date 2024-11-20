@@ -5,6 +5,7 @@ from src import logger
 from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
 from src.pipeline.stage_02_test_data_ingestion import TestIngestionPipeline
 from src.pipeline.stage_03_model_evaluation import ModelEvaluationPipeline
+from src.pipeline.stage_04_bias_detection import BiasDetectionPipeline
 
 import os
 from dotenv import load_dotenv
@@ -54,6 +55,18 @@ try:
     logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
     eval = ModelEvaluationPipeline(app)
     eval.evaluate()
+    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
+except Exception as e:
+    logger.exception(e)
+    raise e
+
+STAGE_NAME = "BIAS DETECTION"
+try:
+    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+    test_results = eval.test_df
+    reviews = eval.review_df
+    bias = BiasDetectionPipeline(test_results, reviews)
+    bias.detect_bias()
     logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
 except Exception as e:
     logger.exception(e)
