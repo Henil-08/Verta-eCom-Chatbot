@@ -36,10 +36,7 @@ class TestIngestionPipeline:
             "B00000JIVS", "B00004YO15", "2914849656", "B00004NKLB", "B00000DMER", 
             "B000062SPJ", "B00000IZOU", "B00003008E", "076245945X", "B000050B3H"
         ]
-        # product_asins = [
-        #     "B00000IV35"
-        # ]
-
+    
         config = ConfigurationManager()
         test_ingest_config = config.get_test_ingestion_config()
         ingestion = TestIngestion(config=test_ingest_config, 

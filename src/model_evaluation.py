@@ -33,6 +33,8 @@ class Evaluation:
         self.app = graph
         self.vector_store_cache = []
         self.results = pd.DataFrame()
+        self.review_df = pd.DataFrame()
+        self.test_df = pd.DataFrame()
 
     
     # Read and combine DataFrames
@@ -93,6 +95,7 @@ class Evaluation:
 
     def create_vector_store(self, review_df):
         review_df = review_df[review_df['text'].notna()]
+        self.review_df = review_df
         loader = DataFrameLoader(review_df)
         review_docs = loader.load()
 
@@ -143,6 +146,7 @@ class Evaluation:
 
     def evaluation(self):
         test_df = self.generate_response()
+        self.test_df = test_df
         test_dataset = Dataset.from_pandas(test_df)
         result = evaluate(
             test_dataset,
