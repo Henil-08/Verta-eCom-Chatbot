@@ -1,12 +1,17 @@
 # from src import logger
 import pandas as pd
 from typing import List, Dict
-from dotenv import load_dotenv
+from langfuse import Langfuse
+# import mlflow
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_groq import ChatGroq
+import pandas as pd
 from collections import Counter
-from transformers import pipeline
-from sentence_transformers.util import pytorch_cos_sim
-from sentence_transformers import SentenceTransformer
+import numpy as np
+import os
+from dotenv import load_dotenv
 import torch
+import json
 load_dotenv()
 
 extended_review_df = pd.DataFrame({
@@ -187,7 +192,7 @@ class BiasDetectionPipeline:
                 reviews=reviews,
                 num_reviews=len(reviews),
             )
-            print(bias_data)
+            # print(bias_data)
             if asin not in self.bias_results:
                     self.bias_results[asin] = {
                         "queries": [],
@@ -207,6 +212,16 @@ class BiasDetectionPipeline:
         # print(self.bias_results)
             # Log bias detection results to MLflow
         # self.log_to_mlflow(query, response, bias_data, asin)
+        for asin, data in self.bias_results.items():
+            if data["bias_detected_count"] > 0:
+                print(f"ASIN: {asin}")
+                # print(f"Number of Reviews: {data['num_reviews']}")
+                # print(f"Review Sentiments: {dict(data['review_sentiments'])}")
+                print(f"Bias Detected Count: {data['bias_detected_count']}")
+                print(f"Bias Types: {', '.join(data['bias_types']) if data['bias_types'] else 'None'}")
+                # print(f"Queries: {data['queries']}")
+                print(f"Responses: {data['responses']}")
+                print("\n")
                 
     def log_bias_results_to_mlflow(self):
         # """
@@ -225,45 +240,62 @@ class BiasDetectionPipeline:
 
 class BiasDetection:
     def __init__(self):
-        self.sentiment_analyzer = pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment")
-        self.similarity_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+        self.embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        self.sentiment_analyzer = ChatGroq(model_name="llama3-groq-8b-8192-tool-use-preview")
+
         # self.langfuse = Langfuse(
         #     api_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
         #     api_secret=os.getenv("LANGFUSE_SECRET_KEY"),
         # )
 
     def analyze_sentiments(self, texts: List[str]) -> Counter:
-        sentiments = self.sentiment_analyzer(texts)
-        return Counter([s["label"] for s in sentiments])
+        sentiment_counts = Counter({"positive": 0, "neutral": 0, "negative": 0})
     
-    # def analyze_sentiments_with_probs(self, texts: List[str]) -> Dict[str, List[float]]:
-    #     sentiments = self.sentiment_analyzer(texts, return_all_scores=True)
-    #     prob_distribution = {"POSITIVE": [], "NEGATIVE": []}
-        
-    #     for sentiment in sentiments:
-    #         for score in sentiment:
-    #             prob_distribution[score["label"]].append(score["score"])
-        
-    #     return prob_distribution
+        for review in texts:
+            try:
+                # Send each review to the LLM for classification
+                sentiment_response = self.sentiment_analyzer.invoke(
+                    f"Classify the sentiment of the following text as positive, neutral, or negative: {review}"
+                )
+                # Standardize the response to lowercase for counting
+                # print(sentiment_response)
+                sentiment = sentiment_response.content.lower()
+                if 'positive' in sentiment:
+                    sentiment_counts['positive'] += 1
+                elif 'negative' in sentiment:
+                    sentiment_counts['negative'] += 1
+                elif 'neutral' in sentiment:
+                    sentiment_counts['neutral'] += 1
+                else:
+                    print(f"Unexpected sentiment response: {sentiment_response}")
+            except Exception as e:
+                print(f"Error analyzing sentiment for review: {review}. Error: {e}")
+        # print(sentiment_counts)
+        return sentiment_counts
 
     def analyze_sentiments_with_probs(self, response: str) -> Dict[str, float]:
-        raw_output = self.sentiment_analyzer(response, return_all_scores=True)
-        # print("Raw Sentiment Output:", raw_output)
-        LABEL_MAPPING = {"LABEL_0": "negative", "LABEL_1": "neutral", "LABEL_2": "positive"}
+        prompt = f"""
+        Analyze the sentiment of the following text and provide the likelihoods for 'positive', 'neutral', and 'negative' sentiments.
+        Output the result as a JSON object with keys 'positive', 'neutral', and 'negative' and probabilities as decimals.
 
+        Text: "{response}"
+        """
+        
+        response = self.sentiment_analyzer.invoke(prompt)
+        # print(response.content)
 
-        sentiment_scores = {}
-        for sentiment in raw_output[0]:
-            mapped_label = LABEL_MAPPING.get(sentiment["label"], sentiment["label"].lower())
-            sentiment_scores[mapped_label] = sentiment["score"]
-
-        return sentiment_scores
+        try:
+            sentiment_probs = json.loads(response.content)
+            return sentiment_probs
+        except Exception as e:
+            print(f"Error parsing sentiment probabilities: {e}")
+            return {"positive": 0.0, "neutral": 0.0, "negative": 0.0}
 
     def sparse_data_acknowledged(self, response: str) -> bool:
-        response_embedding = self.similarity_model.encode(response, convert_to_tensor=True)
-        phrase_embeddings = self.similarity_model.encode(SPARSE_DATA_PHRASES, convert_to_tensor=True)
+        response_embedding = self.embeddings.embed_query(response)
+        phrase_embeddings = [self.embeddings.embed_query(phrase) for phrase in SPARSE_DATA_PHRASES]
+        similarities = torch.tensor([torch.cosine_similarity(torch.tensor(response_embedding), torch.tensor(pe), dim=0) for pe in phrase_embeddings])
 
-        similarities = pytorch_cos_sim(response_embedding, phrase_embeddings)
         max_similarity = torch.max(similarities).item()
 
         return max_similarity > 0.6
@@ -274,13 +306,15 @@ class BiasDetection:
         response_prob_pos = response_probs.get("positive", 0.0)
         response_prob_neu = response_probs.get("neutral", 0.0)
 
-        bias_flags = {"bias_detected": False, "bias_types": []}
-        # print(response)
+        review_pos = review_sentiments.get("positive", 0)
+        review_neg = review_sentiments.get("negative", 0)
+        review_neu = review_sentiments.get("neutral", 0)
 
-        if response_prob_neg > 0.7 and review_sentiments["NEGATIVE"] > review_sentiments["POSITIVE"]:
+        bias_flags = {"bias_detected": False, "bias_types": []}
+
+        if response_prob_neg > 0.7 and review_neg > review_pos:
             bias_flags["bias_detected"] = True
             bias_flags["bias_types"].append("over_reliance_on_negative")
-        # print(num_reviews)
 
         if num_reviews < 4 and not self.sparse_data_acknowledged(response):
 
@@ -289,17 +323,11 @@ class BiasDetection:
 
         return bias_flags
 
-        # Semantic mismatch with reviews
-        # if not self.is_response_consistent(response, reviews):
-        #     bias_flags["bias_detected"] = True
-        #     bias_flags["bias_types"].append("semantic_mismatch")
-
     def is_response_consistent(self, response: str, reviews: List[str]) -> bool:
+        response_embedding = self.similarity_model.encode(response)
+        review_embeddings = self.similarity_model.encode(reviews)
+        similarities = torch.tensor([torch.cosine_similarity(torch.tensor(response_embedding), torch.tensor(pe), dim=0) for pe in phrase_embeddings])
 
-        response_embedding = self.similarity_model.encode(response, convert_to_tensor=True)
-        review_embeddings = self.similarity_model.encode(reviews, convert_to_tensor=True)
-
-        similarities = pytorch_cos_sim(response_embedding, review_embeddings)
         max_similarity = torch.max(similarities).item()
 
         return max_similarity > 0.7
