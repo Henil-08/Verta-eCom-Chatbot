@@ -2,6 +2,6 @@
 .venv
 logs/
 cache
-**.json
+verta-gcp.json
 **/__pycache__
 **/mlruns

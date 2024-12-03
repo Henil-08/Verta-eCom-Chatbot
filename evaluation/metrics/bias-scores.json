@@ -1,0 +1,132 @@
+{
+    "B000050B3H": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 11,
+            "neutral": 5,
+            "negative": 4
+        }
+    },
+    "B00004YO15": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 20,
+            "neutral": 0,
+            "negative": 0
+        }
+    },
+    "1933054395": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 19,
+            "neutral": 1,
+            "negative": 0
+        }
+    },
+    "B00000JBMZ": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 14,
+            "neutral": 6,
+            "negative": 0
+        }
+    },
+    "0976990709": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 16,
+            "neutral": 2,
+            "negative": 2
+        }
+    },
+    "B00001ZWV7": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 12,
+            "neutral": 7,
+            "negative": 1
+        }
+    },
+    "B00000IZKX": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 13,
+            "neutral": 2,
+            "negative": 5
+        }
+    },
+    "160169024X": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 15,
+            "neutral": 3,
+            "negative": 2
+        }
+    },
+    "B00000IZJB": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 15,
+            "neutral": 3,
+            "negative": 2
+        }
+    },
+    "B00005O6B7": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 11,
+            "neutral": 1,
+            "negative": 8
+        }
+    },
+    "B00000IV34": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 20,
+            "neutral": 0,
+            "negative": 0
+        }
+    },
+    "B00004TFLB": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 18,
+            "neutral": 1,
+            "negative": 1
+        }
+    },
+    "B00000DMER": {
+        "bias_detected_count": 0,
+        "bias_types": [],
+        "num_reviews": 20,
+        "review_sentiments": {
+            "positive": 19,
+            "neutral": 1,
+            "negative": 0
+        }
+    }
+}
