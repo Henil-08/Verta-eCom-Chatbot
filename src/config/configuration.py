@@ -1,7 +1,7 @@
 from pathlib import Path
 from src.constants import CONFIG_FILE_PATH, PROMPTS_FILE_PATH
 from src.utils.common import read_yaml, create_directories
-from src.entity.config_entity import (EvaluationConfig, PrepareBaseModelConfig, TestIngestionConfig)
+from src.entity.config_entity import (EvaluationConfig, PrepareBaseModelConfig, TestIngestionConfig, BiasDetectionConfig)
 
 
 class ConfigurationManager:
@@ -78,3 +78,16 @@ class ConfigurationManager:
             mlflow_uri="https://dagshub.com/eCom-dev5/eCom-Chatbot.mlflow",
         )
         return eval_config
+    
+
+    def get_bias_detection_config(self) -> BiasDetectionConfig:
+        config = self.config.bias_detection
+
+        bias_detection_config = BiasDetectionConfig(
+            results_path=config.results_path,
+            embedding_model=config.embedding_model,
+            sentiment_model=config.sentiment_model,
+            prompt_sentiment=self.prompts.SENTIMENT_PROMPT,
+            prompt_prob_sentiment=self.prompts.SENTIMENT_PROBABILITY_PROMPT,
+        )
+        return bias_detection_config

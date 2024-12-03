@@ -5488,6 +5488,22 @@ files = [
 ]
 
 [[package]]
+name = "pymsteams"
+version = "0.2.3"
+description = "Format messages and post to Microsoft Teams."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "pymsteams-0.2.3.tar.gz", hash = "sha256:c0e59dd42708128cd8a9dc0b091b273683c586aa5668cb3a0e62146f9525e61b"},
+]
+
+[package.dependencies]
+requests = ">=2.20.0"
+
+[package.extras]
+async = ["httpx (>=0.18.2)"]
+
+[[package]]
 name = "pyparsing"
 version = "3.2.0"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
@@ -8112,4 +8128,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "c4ddafa219b7d965c8a65f43585afe1d89a1a2fe0c1f637a954046cf43e7872d"
+content-hash = "d43bdba529e7dbc3e130cb88f1eccc59d27853570be901b4e01bc7d742a92662"

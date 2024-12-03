@@ -17,7 +17,7 @@ from pathlib import Path
 from sqlalchemy import text
 from langgraph.graph.state import CompiledStateGraph
 from langfuse.callback import CallbackHandler
-from langchain.document_loaders import DataFrameLoader
+from langchain_community.document_loaders import DataFrameLoader
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from urllib.parse import urlparse

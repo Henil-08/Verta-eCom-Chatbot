@@ -11,8 +11,9 @@ stages:
     deps:
       - src/pipeline/stage_02_test_data_ingestion.py
       - config/config.yaml
-    outs:
-      - artifact/product_uuids.json
+    metrics:
+    - artifact/product_uuids.json:
+        cache: false
 
 
   evaluation:
@@ -24,3 +25,22 @@ stages:
     metrics:
     - evaluation/metrics/base-scores.json:
         cache: false
+
+
+  bias_detection:
+    cmd: python -m src.pipeline.stage_04_bias_detection
+    deps:
+      - src/pipeline/stage_04_bias_detection.py
+      - config/config.yaml
+      - evaluation/results
+    metrics:
+    - evaluation/metrics/bias-scores.json:
+        cache: false
+
+
+  failure_detection:
+    cmd: python -m src.pipeline.stage_05_failure_detection
+    deps:
+      - src/pipeline/stage_05_failure_detection.py
+      - evaluation/metrics/bias-scores.json
+      - evaluation/metrics/base-scores.json

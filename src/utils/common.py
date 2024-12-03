@@ -79,6 +79,17 @@ def save_json(path: Path, data: dict):
     logger.info(f"json file saved at: {path}")
 
 
+@ensure_annotations
+def make_serializable(data):
+    """Recursively convert sets to lists and handle other non-serializable types."""
+    if isinstance(data, set):
+        return list(data)  # Convert set to list
+    elif isinstance(data, dict):
+        return {key: make_serializable(value) for key, value in data.items()}  # Recursively process dicts
+    elif isinstance(data, list):
+        return [make_serializable(item) for item in data]  # Recursively process lists
+    else:
+        return data
 
 
 @ensure_annotations

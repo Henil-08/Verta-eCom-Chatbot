@@ -20,3 +20,9 @@ evaluation:
   results_path: evaluation/results
   testset_path: evaluation/testset
   file_hash: artifact/product_uuids.json
+
+
+bias_detection:
+  embedding_model: all-MiniLM-L6-v2
+  sentiment_model: gpt-4o-mini
+  results_path: evaluation/results

@@ -5,8 +5,8 @@ stages:
     deps:
     - path: config/config.yaml
       hash: md5
-      md5: 0e8efaefb31dd804e2aeb0f993d3ad42
-      size: 529
+      md5: 390b48fe4173ef288c2668248ab5b12d
+      size: 649
     - path: src/pipeline/stage_01_prepare_base_model.py
       hash: md5
       md5: b58cbc288ea819c848a7843570218c5e
@@ -16,29 +16,29 @@ stages:
     deps:
     - path: config/config.yaml
       hash: md5
-      md5: 0e8efaefb31dd804e2aeb0f993d3ad42
-      size: 529
+      md5: 390b48fe4173ef288c2668248ab5b12d
+      size: 649
     - path: src/pipeline/stage_02_test_data_ingestion.py
       hash: md5
-      md5: 915cbcaeb7634516b870076061704497
-      size: 2022
+      md5: 01b6c4b8b70b156f8e6af66f8236c8c8
+      size: 1959
     outs:
     - path: artifact/product_uuids.json
       hash: md5
-      md5: 627286f5b1b91b446ad6dd568cbd35d1
+      md5: 9383204c0af0aa9373cb45416e7b902d
       size: 1742
   evaluation:
     cmd: python -m src.pipeline.stage_03_model_evaluation
     deps:
     - path: config/config.yaml
       hash: md5
-      md5: 0e8efaefb31dd804e2aeb0f993d3ad42
-      size: 529
+      md5: 390b48fe4173ef288c2668248ab5b12d
+      size: 649
     - path: evaluation/testset
       hash: md5
-      md5: 2f331258aa79f5c7b051ec070f1e8f72.dir
-      size: 281986
-      nfiles: 31
+      md5: 5d78c2c78646a3e44fe1bb2e765cc009.dir
+      size: 284758
+      nfiles: 29
     - path: src/pipeline/stage_03_model_evaluation.py
       hash: md5
       md5: 28a8e81a5b9a673114cd4a6d4b217846
@@ -46,5 +46,41 @@ stages:
     outs:
     - path: evaluation/metrics/base-scores.json
       hash: md5
-      md5: 12ab33a3d43eec368e6ea0b02df72486
-      size: 586
+      md5: 0da9c4cfa7ffd7f282503aaec9010dc5
+      size: 412
+  bias_detection:
+    cmd: python -m src.pipeline.stage_04_bias_detection
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 390b48fe4173ef288c2668248ab5b12d
+      size: 649
+    - path: evaluation/results
+      hash: md5
+      md5: e5bc7f25087958ef05fd9fb2c768f18a.dir
+      size: 95502
+      nfiles: 2
+    - path: src/pipeline/stage_04_bias_detection.py
+      hash: md5
+      md5: 6821da13f5c04a6106b20533a833a15f
+      size: 1400
+    outs:
+    - path: evaluation/metrics/bias-scores.json
+      hash: md5
+      md5: 0640b6d62485ecaa32e445d5e47fb38c
+      size: 3057
+  failure_detection:
+    cmd: python -m src.pipeline.stage_05_failure_detection
+    deps:
+    - path: evaluation/metrics/base-scores.json
+      hash: md5
+      md5: 0da9c4cfa7ffd7f282503aaec9010dc5
+      size: 412
+    - path: evaluation/metrics/bias-scores.json
+      hash: md5
+      md5: 0640b6d62485ecaa32e445d5e47fb38c
+      size: 3057
+    - path: src/pipeline/stage_05_failure_detection.py
+      hash: md5
+      md5: 2e89c3aa0b8b83e1d7f22230aec17f80
+      size: 1256

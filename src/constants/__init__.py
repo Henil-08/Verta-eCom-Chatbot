@@ -23,3 +23,20 @@ CONDITIONAL_MAP["FINISH"] = 'generate'
 REVIEW_TABLE = "ecom-chat-437005.ecom_chat.review"
 META_TABLE = "ecom-chat-437005.ecom_chat.meta"
 PARENT_ASIN = 'B072K6TLJX'
+
+# Bias Detection Phrases
+SPARSE_DATA_PHRASES = [
+    "few reviews", 
+    "limited data", 
+    "insufficient information", 
+    "not enough reviews", 
+    "small sample size"
+]
+
+# Thresholds
+THRESHOLDS = {
+    "context_precision": 0.5,
+    "faithfulness": 0.15,
+    "answer_relevancy": 0.5,
+    "context_recall": 0.5,
+}

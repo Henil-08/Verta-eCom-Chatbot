@@ -107,7 +107,7 @@ jobs:
           PORT: 80
         run: |-
           echo "Running Model Pipeline"
-          dvc repro
+          poetry run python main.py
         
 
       - name: Clean up Google Credentials

@@ -1,21 +1,16 @@
 import os
 import uuid
 from src import logger
-from ragas import evaluate
 from ragas.testset.evolutions import (simple, reasoning, multi_context)
 from ragas.testset import TestsetGenerator
 
 
-
-from datasets import Dataset
-from urllib.parse import urlparse
 import pandas as pd
 from pathlib import Path
 from sqlalchemy import text
 from langchain_community.document_loaders import DataFrameLoader
 from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from urllib.parse import urlparse
 from src.entity.config_entity import TestIngestionConfig
 from src.utils.common import save_json, save_parquet
 from src.utils.database import connect_with_db

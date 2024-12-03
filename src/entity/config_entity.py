@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-
 @dataclass(frozen=True)
 class PrepareBaseModelConfig:
     cache_dir: Path
@@ -15,7 +14,6 @@ class PrepareBaseModelConfig:
     prompt_metadata: str
     prompt_base_model: str
     prompt_followup: str
-
 
 @dataclass(frozen=True)
 class TestIngestionConfig:
@@ -37,3 +35,11 @@ class EvaluationConfig:
     registered_model_name: str
     all_params: dict
     mlflow_uri: str
+
+@dataclass(frozen=True)
+class BiasDetectionConfig:
+    results_path: Path
+    embedding_model: str
+    sentiment_model: str
+    prompt_sentiment: str
+    prompt_prob_sentiment: str

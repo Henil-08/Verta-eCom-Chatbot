@@ -112,4 +112,52 @@ FOLLOWUP_PROMPT: |
   Compulsory Format them like this - after generated question 1 there should be '\\n' and then question 2 then '\\n' and then question 3 in one line like this:
   question1\\nquestion2\\nquestion3
 
+SENTIMENT_PROMPT: |
+  Classify the sentiment of the following text as positive, neutral, or negative, taking into account nuances such as sarcasm, mixed sentiments, or implicit tone. 
+  Provide a clear and concise classification. 
+  Here are some examples to guide your response:
+
+  Examples:
+  1.	Text: “I absolutely love this product! It works perfectly every time.”
+      Output: Positive
+  2.	Text: “It’s okay, does the job, but nothing extraordinary.”
+      Output: Neutral
+  3.	Text: “Terrible experience. It broke the first day I used it.”
+      Output: Negative
+
+  Text: {review}
+  Output: (Positive/Neutral/Negative)
+
+SENTIMENT_PROBABILITY_PROMPT: |
+  Analyze the sentiment of the following text and provide the likelihoods for positive, neutral, and negative sentiments. 
+  Output the result as a JSON object with keys 'positive', 'neutral', and 'negative', where the values are probabilities as decimals (e.g., 0.7).
+
+  Examples:
+  1.	Text: “This product is fantastic and exceeded my expectations.”
+      Output:
+      {{
+          "positive": 0.9,
+          "neutral": 0.1,
+          "negative": 0.0
+      }}
+
+  2.	Text: “It’s fine, nothing special but not bad either.”
+      Output:
+      {{
+          "positive": 0.2,
+          "neutral": 0.7,
+          "negative": 0.1
+      }}
+
+  3.	Text: “Absolutely terrible, a complete waste of money.”
+      Output:
+      {{
+          "positive": 0.0,
+          "neutral": 0.1,
+          "negative": 0.9
+      }}
+
+  Text: "{response}"
+  Output: (Provide a JSON object like the examples above.)
+
   
