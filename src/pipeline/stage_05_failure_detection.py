@@ -1,7 +1,7 @@
 import os
 
-from src import logger
-from src.failure_detection import FailureDetection
+from logger import logger
+from main.failure_detection import FailureDetection
 
 from dotenv import load_dotenv
 load_dotenv()

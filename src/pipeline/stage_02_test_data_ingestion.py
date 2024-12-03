@@ -1,9 +1,9 @@
 import nest_asyncio
 nest_asyncio.apply()
 
-from src.test_ingestion import TestIngestion
-from src.config.configuration import ConfigurationManager
-from src import logger
+from main.test_ingestion import TestIngestion
+from config.configuration import ConfigurationManager
+from logger import logger
 
 import os
 from dotenv import load_dotenv

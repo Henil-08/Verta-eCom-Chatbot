@@ -1,8 +1,8 @@
 import os
 
-from src import logger
-from src.bias_detection import BiasDetection
-from src.config.configuration import ConfigurationManager
+from logger import logger
+from main.bias_detection import BiasDetection
+from config.configuration import ConfigurationManager
 
 from dotenv import load_dotenv
 load_dotenv()

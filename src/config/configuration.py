@@ -1,7 +1,8 @@
 from pathlib import Path
-from src.constants import CONFIG_FILE_PATH, PROMPTS_FILE_PATH
-from src.utils.common import read_yaml, create_directories
-from src.entity.config_entity import (EvaluationConfig, PrepareBaseModelConfig, TestIngestionConfig, BiasDetectionConfig)
+
+from constants import CONFIG_FILE_PATH, PROMPTS_FILE_PATH
+from utils.common import read_yaml, create_directories
+from entity.config_entity import (EvaluationConfig, PrepareBaseModelConfig, TestIngestionConfig, BiasDetectionConfig)
 
 
 class ConfigurationManager:

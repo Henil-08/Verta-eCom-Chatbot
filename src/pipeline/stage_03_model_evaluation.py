@@ -1,8 +1,8 @@
-from src.model_evaluation import Evaluation
-from src.config.configuration import ConfigurationManager
+from main.model_evaluation import Evaluation
+from config.configuration import ConfigurationManager
 from langgraph.graph.state import CompiledStateGraph
-from src import logger
-from src.pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
+from logger import logger
+from pipeline.stage_01_prepare_base_model import PrepareBaseTrainingPipeline
 
 import os
 from dotenv import load_dotenv

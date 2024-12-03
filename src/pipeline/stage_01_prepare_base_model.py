@@ -1,8 +1,8 @@
-from src.graph import Graph
-from src.config.configuration import ConfigurationManager
+from main.graph import Graph
+from config.configuration import ConfigurationManager
 from langgraph.graph.state import CompiledStateGraph
 
-from src import logger
+from logger import logger
 
 import os
 from dotenv import load_dotenv

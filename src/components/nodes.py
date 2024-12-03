@@ -1,8 +1,8 @@
 from langchain_groq import ChatGroq
 from langchain_openai import ChatOpenAI
-from src.components.state import MultiAgentState
 from langchain_core.prompts import ChatPromptTemplate
 
+from components.state import MultiAgentState
 
 def route_question(state):
     source = state['question_type']

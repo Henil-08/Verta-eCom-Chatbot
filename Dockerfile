@@ -14,4 +14,4 @@ RUN poetry install --only main --no-root --verbose
 ENV HOST 0.0.0.0
 ENV PORT 80
 
-CMD ["python", "serve.py"]
+CMD ["python", "src/serve.py"]

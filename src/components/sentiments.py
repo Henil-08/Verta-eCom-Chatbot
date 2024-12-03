@@ -1,8 +1,9 @@
-from src import logger
-from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
+from langchain_openai import ChatOpenAI
+
+from logger import logger
 
 
 def prob_sentiment_model(model_name, prompt):

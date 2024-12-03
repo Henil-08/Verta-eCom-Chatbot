@@ -84,7 +84,7 @@ jobs:
           PORT: 80
         run: |-
           echo "Running Model Pipeline"
-          poetry run python main.py
+          poetry run python src/main.py
 
       - name: Run unit tests
         env: 
@@ -109,7 +109,7 @@ jobs:
           PORT: 80
         run: |-
           echo "Running unit tests for verta"
-          pytest test.py --junitxml=test-results.xml
+          pytest tests/test.py --junitxml=test-results.xml
 
       - name: Clean up Google Credentials
         run: rm /tmp/google-credentials.json
