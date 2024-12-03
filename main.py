@@ -28,19 +28,19 @@ os.environ["MLFLOW_TRACKING_PASSWORD"]=os.getenv("MLFLOW_TRACKING_PASSWORD")
 os.environ["MS_TEAMS_WEBHOOK_URL"]=os.getenv("MS_TEAMS_WEBHOOK_URL")
 
 
-# STAGE_NAME = "Create LangGraph Workflow"
-# try:
-#     logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
-#     prepare_base = PrepareBaseTrainingPipeline()
-#     app = prepare_base.graph(isMemory=False)
-#     response = app.invoke({'question': 'Hello!', 
-#                            "meta_data": '',
-#                            "retriever": ''})
-#     if(response['answer'].content):
-#         logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
-# except Exception as e:
-#     logger.exception(e)
-#     raise e 
+STAGE_NAME = "Create LangGraph Workflow"
+try:
+    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+    prepare_base = PrepareBaseTrainingPipeline()
+    app = prepare_base.graph(isMemory=False)
+    response = app.invoke({'question': 'Hello!', 
+                           "meta_data": '',
+                           "retriever": ''})
+    if(response['answer'].content):
+        logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
+except Exception as e:
+    logger.exception(e)
+    raise e 
 
 
 # STAGE_NAME = "Test Data Ingestion"
