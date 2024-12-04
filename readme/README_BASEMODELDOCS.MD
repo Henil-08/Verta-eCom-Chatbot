@@ -2,195 +2,205 @@
 
 ## **Overview**
 
-The **Base Model RAG (Retrieve-then-Generate)** Chatbot is a sophisticated architecture designed to handle complex user queries by dynamically retrieving relevant information and generating human-like responses. This architecture leverages multiple modules, including retrieval agents, summarization models, and generative language models, to ensure high accuracy and context-awareness in responses.
+The **Base Model RAG (Retrieve-then-Generate)** Chatbot is designed to process and respond to user queries dynamically. By leveraging advanced retrieval and generation techniques, the architecture ensures high contextual accuracy and detailed responses. The system intelligently routes queries to specialized modules like SQL agents, retrievers, and summarization models, all orchestrated under a supervisor module.
 
-The architecture is integrated with LangFuse for tracking token usage, query traces, and resource consumption, providing full visibility into operations and performance.
-
----
-
-## **Architecture Overview**
-
-### **RAG Chatbot Workflow**
-
-The Base RAG Chatbot consists of the following components:
-
-1. **Supervisor Module**: Orchestrates the flow of queries across different agents and modules based on query type.
-2. **SQL-Agent**: Retrieves structured product metadata and user reviews from a PostgreSQL database.
-3. **Vectorstore Retriever**: Uses FAISS to retrieve relevant documents based on embeddings of unstructured data like reviews.
-4. **Metadata Summarizer LLM**: Summarizes product metadata into concise information for user queries.
-5. **Main LLM (ChatGPT or Similar)**: Synthesizes responses by combining user inputs and retrieved context.
-6. **Follow-up Question Generator**: Generates follow-up questions to improve engagement and clarify ambiguous user inputs.
-7. **LangFuse Integration**: Tracks traces, token usage, query logs, and API costs for each interaction.
+In addition to real-time functionality, the system integrates with **LangFuse Analytics** for monitoring query traces, token usage, and overall performance.
 
 ---
 
-### **Workflow Diagram**
+## **Detailed Architecture**
+![System Architecture](/media/workflow.pngg)
+### **Core Components**
+
+1. **Supervisor Module**:  
+   Centralized routing mechanism that determines the appropriate pipeline (metadata or unstructured queries).  
+
+2. **SQL-Agent**:  
+   Interacts with a PostgreSQL database to fetch structured data such as product metadata and user reviews.  
+
+3. **Vectorstore Retriever**:  
+   Retrieves unstructured data (e.g., detailed user reviews) using **FAISS** for vector similarity search.  
+
+4. **Metadata Summarizer**:  
+   Converts retrieved metadata into concise summaries.  
+
+5. **Main LLM**:  
+   Synthesizes final responses, combining user input, structured metadata, and retrieved documents.  
+
+6. **Follow-up Question Generator**:  
+   Enhances user engagement by suggesting follow-up questions based on prior interactions.  
+
+7. **LangFuse Analytics**:  
+   Tracks operational data, including query traces, token usage, and cost attribution for each stage of the pipeline.  
+
+---
+
+### **Architecture Workflow**
+
+The following diagram visually represents the architecture:
 
 ```mermaid
 flowchart TD
     start[User Query]
-    start --> supervisor["Supervisor"]
+    start --> supervisor["Supervisor Module"]
     supervisor -->|Metadata Query| sqlagent["SQL-Agent"]
     supervisor -->|Unstructured Query| vectorstore["Vectorstore Retriever"]
-    sqlagent --> summarizer["Metadata Summarizer LLM"]
-    vectorstore --> mainllm["Main LLM (ChatGPT)"]
+    sqlagent --> summarizer["Metadata Summarizer"]
+    vectorstore --> mainllm["Main LLM (ChatGPT or LLaMA)"]
     summarizer --> mainllm
-    mainllm --> followup["Follow-up Question LLM"]
+    mainllm --> followup["Follow-up Question Generator"]
     followup --> response["Response to User"]
     response --> langfuse["LangFuse Analytics"]
 ```
 
 ---
 
-## **Pipeline Components**
+## **Component Details**
 
 ### **1. Supervisor Module**
-- **Role:** Routes queries to the appropriate agents based on the query type:
-  - Metadata queries are sent to the SQL-Agent for structured data retrieval.
-  - Context-based queries are routed to the Vectorstore Retriever.
-- **Integration with LangFuse:**
-  - Logs routing decisions and query traces for analytics.
+- **Role**: Routes user queries based on type:
+  - Metadata-related queries → SQL-Agent.
+  - Contextual/unstructured queries → Vectorstore Retriever.
+- **Integration**:  
+   - Logs routing decisions via **LangFuse**.  
+   - Tracks processing times for analytics.
 
 ---
 
 ### **2. SQL-Agent**
-- **Role:** Retrieves structured metadata and user reviews from a PostgreSQL database.
-- **Workflow:**
-  - Executes SQL queries to fetch data such as product features, ratings, and reviews.
-  - Prepares data for the Metadata Summarizer.
-- **Example Use Case:** Fetching product features, pricing, and review summaries for specific ASINs.
-- **Integration with LangFuse:**
-  - Logs database queries and processing times.
+- **Role**: Fetches structured data from a PostgreSQL database.  
+- **Data Retrieved**:  
+  - Product features, pricing, and user reviews.  
+  - Metadata like ASIN-specific details.  
+- **Example Query**:  
+  ```sql
+  SELECT * FROM metadata WHERE asin = 'B08K2S3D2K';
+  ```
+- **LangFuse Logging**: Tracks SQL execution and data preparation times.
 
 ---
 
 ### **3. Vectorstore Retriever**
-- **Role:** Retrieves unstructured data (e.g., user reviews, product descriptions) based on relevance.
-- **Workflow:**
-  - Converts data into embeddings using HuggingFace's MiniLM model.
-  - Stores embeddings in a FAISS vector database for efficient retrieval.
-  - Fetches relevant documents based on user queries.
-- **Integration with LangFuse:**
-  - Tracks document retrieval operations and token usage for embedding calculations.
+- **Role**: Handles unstructured data retrieval for context-driven queries.  
+- **Workflow**:
+  - Embeddings generated via **HuggingFace’s MiniLM** model.  
+  - Similarity search performed on FAISS database.  
+  - Relevant documents fetched based on user query context.  
+- **Example**: Searching user reviews related to noise cancellation.  
+- **LangFuse Analytics**: Logs retrieval operations and embedding token usage.
 
 ---
 
-### **4. Metadata Summarizer LLM**
-- **Role:** Summarizes metadata retrieved by the SQL-Agent into a concise format.
-- **Workflow:**
-  - Processes structured data like features, ratings, and pricing.
-  - Returns a summarized version of the metadata to the Main LLM.
-- **Example Use Case:** Condensing product information for user queries like “Tell me about this product.”
-- **Integration with LangFuse:**
-  - Logs token usage for summarization tasks.
+### **4. Metadata Summarizer**
+- **Role**: Summarizes structured metadata retrieved by the SQL-Agent.  
+- **Example Output**:  
+  - Input: Product pricing, dimensions, and features.  
+  - Output: "This product features noise cancellation, lightweight design, and is priced at $99.99."  
+- **LangFuse Analytics**: Tracks token usage for summarization tasks.
 
 ---
 
-### **5. Main LLM (ChatGPT or Similar)**
-- **Role:** Synthesizes final responses using user queries, metadata summaries, and retrieved documents.
-- **Workflow:**
-  - Combines context retrieved from SQL-Agent, Vectorstore Retriever, and Metadata Summarizer.
-  - Generates coherent and context-aware responses.
-- **Example Use Case:** Answering user questions like “What are the top features of this product?”
-- **Integration with LangFuse:**
-  - Tracks token usage and generates logs for each interaction.
+### **5. Main LLM (e.g., ChatGPT, LLaMA)**
+- **Role**: Synthesizes final chatbot responses by combining:  
+  - User input.  
+  - Summarized metadata.  
+  - Retrieved unstructured data.  
+- **Example Query Handling**:
+  - Input: "What are the key features of this product?"  
+  - Output: "This product offers superior noise cancellation, long battery life, and a sleek design."  
+- **LangFuse Analytics**: Tracks:
+  - Token usage.  
+  - API credits consumed.  
 
 ---
 
 ### **6. Follow-up Question Generator**
-- **Role:** Improves engagement by generating follow-up questions to ambiguous or incomplete queries.
-- **Workflow:**
-  - Evaluates user queries and responses.
-  - Generates follow-up questions for clarification or additional context.
-- **Example Use Case:** Suggesting follow-up queries like “Would you like to compare this product with similar items?”
-- **Integration with LangFuse:**
-  - Logs generated follow-up questions and token usage.
+- **Role**: Generates follow-up questions to improve user engagement.  
+- **Example**:  
+  - After providing product details:  
+    - "Would you like to compare this product with similar options?"  
+- **LangFuse Analytics**: Tracks follow-up question generation and engagement metrics.
 
 ---
 
 ### **7. LangFuse Analytics**
-- **Role:** Tracks and logs all interactions within the pipeline.
-- **Features:**
-  - **Trace Logging:** Captures every stage of the pipeline, including input/output and processing time.
-  - **Token Usage Tracking:** Monitors tokens consumed by LLMs for summarization, retrieval, and generation.
-  - **Query Tracking:** Logs user queries and metadata for analytics.
-  - **Cost Attribution:** Calculates API credits consumed per request.
-- **Example Use Case:** Analyzing token usage and costs for a specific query.
+- **Role**: Provides full visibility into the operational pipeline.  
+- **Features**:
+  - **Trace Logging**: Tracks input/output at every pipeline stage.  
+  - **Token Monitoring**: Logs token consumption for summarization, retrieval, and response generation.  
+  - **Cost Attribution**: Calculates API and infrastructure costs per query.  
 
 ---
 
-## **Pipeline Execution**
+## **Pipeline Execution Workflow**
 
-### **Step-by-Step Workflow**
+### **1. User Query Submission**
+- Users submit a query via the chatbot frontend using the `dev/stream` API.  
 
-1. **User Query Submission**
-   - Users submit queries via the chatbot frontend using the `dev/stream` API.
+### **2. Supervisor Decision**
+- The Supervisor Module determines whether the query relates to metadata or unstructured data.  
 
-2. **Supervisor Routing**
-   - The Supervisor module determines the query type:
-     - Metadata queries → Routed to SQL-Agent.
-     - Contextual queries → Routed to Vectorstore Retriever.
+### **3. Data Retrieval**
+- Metadata queries → SQL-Agent retrieves structured data.  
+- Unstructured queries → Vectorstore Retriever fetches relevant documents.  
 
-3. **Data Retrieval**
-   - SQL-Agent retrieves structured data (e.g., product metadata).
-   - Vectorstore Retriever fetches relevant unstructured documents.
+### **4. Metadata Summarization**
+- SQL-Agent output is summarized for concise context delivery.  
 
-4. **Metadata Summarization**
-   - SQL-Agent output is summarized by the Metadata Summarizer LLM.
+### **5. Final Response Generation**
+- The Main LLM synthesizes the final response.  
 
-5. **Response Generation**
-   - Main LLM synthesizes a response using user input, metadata summaries, and retrieved context.
+### **6. Follow-up Engagement**
+- A follow-up question is generated to clarify or engage further.  
 
-6. **Follow-up Questions**
-   - Follow-up Question Generator evaluates user interactions and suggests additional queries.
-
-7. **Response Delivery**
-   - The chatbot delivers the response and follow-up questions to the user.
-
-8. **Analytics Logging**
-   - LangFuse logs traces, token usage, and query details for analysis.
+### **7. LangFuse Analytics Logging**
+- Tracks the entire interaction, including token usage and query traces.
 
 ---
 
-## **Integration with Frontend**
+## **API Integration**
 
-### **dev/stream API**
+### **Request Example**
+```json
+{
+  "query": "What are the features of this product?",
+  "parent_asin": "B08K2S3D2K",
+  "user_id": "user_12345",
+  "log_langfuse": true,
+  "stream_tokens": true
+}
+```
 
-- **Purpose:** Processes user queries and delivers responses via a RESTful API.
-- **Request Example:**
-  ```json
-  {
-      "query": "What are the features of this product?",
-      "parent_asin": "B08K2S3D2K",
-      "user_id": "user_12345",
-      "log_langfuse": true,
-      "stream_tokens": true
-  }
-  ```
-- **Response Example:**
-  ```json
-  {
-      "response": "This product features noise cancellation, 10-hour battery life, and a competitive price of $99.99.",
-      "follow_up": "Would you like me to compare this product with similar options?"
-  }
-  ```
+### **Response Example**
+```json
+{
+  "response": "This product features noise cancellation, long battery life, and a sleek design.",
+  "follow_up": "Would you like me to compare this product with similar options?"
+}
+```
 
 ---
 
-## **Key Features**
+## **LangFuse Analytics Integration**
 
-1. **Dynamic Query Handling**
-   - Routes metadata-related and general queries to specialized modules for accurate responses.
+### **Key Metrics Tracked**
+1. **Trace Logging**: Captures each module’s input/output.  
+2. **Token Usage**: Tracks tokens consumed by:  
+   - Metadata Summarization.  
+   - Main LLM.  
+   - Follow-up Question Generator.  
+3. **Cost Attribution**: Calculates API credits and infrastructure costs.  
 
-2. **Modular Design**
-   - Components like SQL-Agent, Vectorstore Retriever, and Metadata Summarizer work independently, ensuring scalability and maintainability.
+---
 
-3. **Contextual Accuracy**
-   - Combines structured and unstructured data to generate detailed, context-aware responses.
+## **Future Improvements**
 
-4. **Analytics with LangFuse**
-   - Tracks every stage of the pipeline, providing insights into performance, token usage, and costs.
+1. **Optimization**:
+   - Fine-tune LLMs to reduce token usage.  
+   - Implement caching for frequently queried metadata.  
 
-5. **Real-Time Interaction**
-   - Streams tokenized responses for faster delivery in the chatbot interface.
+2. **Expand Retrieval Capabilities**:
+   - Add additional document retrievers for new data sources.  
 
+3. **User Feedback Loop**:
+   - Incorporate real-time user feedback into LangFuse analytics for adaptive response generation.  
