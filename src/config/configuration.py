@@ -76,7 +76,7 @@ class ConfigurationManager:
             pip_requirements="requirements.txt",
             registered_model_name=f"verta-{supervisor}-{metadata}-{base_model}-{followup_model}",
             all_params=self.prompts,
-            mlflow_uri="https://dagshub.com/eCom-dev5/eCom-Chatbot.mlflow",
+            mlflow_uri="https://dagshub.com/Henil-08/verta-chatbot.mlflow",
         )
         return eval_config
     
