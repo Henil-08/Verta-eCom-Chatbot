@@ -1,16 +1,33 @@
 # API Documentation for Verta (Serve.py)
 
-This API is designed to handle user input through Verta and return responses, with support for both streaming and non-streaming modes.
+This API is designed to handle user input through Verta and return responses, with support for both streaming and non-streaming modes. We used FastAPI to deploy the Verta REST API to GCP Cloud Run so it automatically comes with the models at the /docs route e.g. https://verta-chat-service-403080441770.us-east1.run.app/docs
+
+You can use this interface to see & test all API endpoints.
 
 ## Base URL
 
 ```
-http://localhost:80
+https://verta-chat-service-403080441770.us-east1.run.app
 ```
+
+## Authorization
+The API has user protected endpoints that require a bearer token that we have assigned and will Slack to you.
 
 ## Endpoints
 
-### 1. `/initialize`
+### 1. `/`
+
+**Method:** `GET`
+**Description:** Root endpoint; health check of API, returns 
+```json
+{
+  "status": "🤙"
+} 
+```
+when service is up; not user protected
+
+
+### 2. `/initialize`
 
 **Method:** `GET`
 
@@ -33,40 +50,6 @@ http://localhost:80
 }
 
 ```
-
----
-
-### 2. `/clear-cache`
-
-**Method:** `POST`
-
-**Description:** Clears the vector store and metadata cache for a specified product (ASIN) and user ID.
-
-**Request Body:**
-
-```json
-{
-  "user_id": "string",
-  "parent_asin": "string"
-}
-
-```
-
-| Field | Type | Description |
-| --- | --- | --- |
-| user_id | string | The unique identifier for the user. |
-| parent_asin | string | The product's Parent ASIN ID. |
-
-**Response:**
-
-```json
-{
-  "status": "cache cleared"
-}
-
-```
-
-Returns **400 Bad Request** if the specified retriever does not exist.
 
 ---
 
@@ -120,12 +103,7 @@ Returns **500 Bad Request** if failed to add user-feedback
 
 ```json
 {
-  "user_input": "string",
-  "config": {
-    "configurable": {
-        "thread_id": "string"
-    }
-  },
+  "query": "string",
   "parent_asin": "string",
   "user_id": "string",
   "log_langfuse": true,
@@ -135,7 +113,7 @@ Returns **500 Bad Request** if failed to add user-feedback
 
 | Field          | Type   | Description                                                        |
 |----------------|--------|--------------------------------------------------------------------|
-| user_input     | string | The question or query you want the agent to respond to.            |
+| query     | string | The question or query you want the agent to respond to.            |
 | parent_asin    | string | The Parent Asin Id of the product querying.                        |  
 | user_id        | string | The User-ID of the user logged in.                                 |
 | log_langfuse   | bool   | Whether to log responses and interactions to Langfuse.             |
@@ -145,6 +123,7 @@ Returns **500 Bad Request** if failed to add user-feedback
 
 ```json
 {
+  "run_id": "string",
   "question": "string",
   "answer": "string",
   "followup_questions": [
@@ -175,11 +154,6 @@ Returns **500 Bad Request** if failed to add user-feedback
 ```json
 {
   "user_input": "string",
-  "config": {
-    "configurable": {
-        "thread_id": "string"
-    }
-  },
   "parent_asin": "string",
   "user_id": "string",
   "log_langfuse": true,
@@ -256,3 +230,10 @@ Refer to the main `README.md` for installation and setup instructions.
 
 - Ensure that environment variables for `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST` are properly set.
 - For tracing and monitoring, Langfuse integration is used for logging interactions and responses.
+
+---
+
+### Error Codes and Messages
+
+- **400:** FastAPI returns a 400 status code for generic client errors
+- **500:** FastAPI returns a 500 status code for server errors, such as when there's a Pydantic ValidationError in your code. This prevents clients from seeing internal information about the error, which could be a security vulnerability.
