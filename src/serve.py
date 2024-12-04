@@ -137,7 +137,7 @@ async def log_requests(request: Request, call_next):
 
 @app.get("/")
 async def health():
-    return {"message": "Welcome to the Verta FastAPI app!"}
+    return {"status": "🤙"} 
 
 
 @app.get("/initialize")
