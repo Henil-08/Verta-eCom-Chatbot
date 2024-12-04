@@ -5,13 +5,6 @@ on:
     branches: 
     - staging
 
-env:
-  PROJECT_ID: 'verta-441204'
-  GAR_NAME: 'verta-chat-api'
-  GAR_LOCATION: "us-east1"
-  SERVICE: 'verta-chat-service'
-  REGION: "us-east1"
-
 jobs:
   integration:
     name: Continuous Integration
@@ -143,12 +136,12 @@ jobs:
 
       - name: 'Docker Auth'
         run: |-
-          gcloud auth configure-docker "us-east1-docker.pkg.dev"
+          gcloud auth configure-docker "${{ secrets.REGION }}-docker.pkg.dev"
   
       - name: 'Build and Push Container'
         run: |-
-          docker build -t "us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}" -f Dockerfile .
-          docker push "us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}"
+          docker build -t "${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_NAME }}/${{ secrets.SERVICE }}:${{ github.sha }}" -f Dockerfile .
+          docker push "${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_NAME }}/${{ secrets.SERVICE }}:${{ github.sha }}"
 
       - name: 'Show output'
         run: echo ${{ steps.delivery.outputs.url }}

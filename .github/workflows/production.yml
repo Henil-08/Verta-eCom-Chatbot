@@ -6,11 +6,6 @@ on:
       - production
 
 env:
-  PROJECT_ID: 'verta-441204'
-  GAR_NAME: 'verta-chat-api'
-  GAR_LOCATION: "us-east1"
-  SERVICE: 'verta-chat-service'
-  REGION: "us-east1"
   TIMEOUT: 240s
   PORT: 80
   CPU: 4
@@ -61,11 +56,11 @@ jobs:
 
       - name: 'Deploy to Cloud Run'
         run: |-
-          gcloud run deploy ${{env.SERVICE}} \
+          gcloud run deploy ${{secrets.SERVICE}} \
             --allow-unauthenticated \
-            --image="us-east1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.SERVICE }}:${{ github.sha }}" \
-            --project=${{env.PROJECT_ID}} \
-            --region=${{env.REGION}} \
+            --image="${{ secrets.REGION }}-docker.pkg.dev/${{ secrets.PROJECT_ID }}/${{ secrets.GAR_NAME }}/${{ secrets.SERVICE }}:${{ github.sha }}" \
+            --project=${{secrets.PROJECT_ID}} \
+            --region=${{secrets.REGION}} \
             --memory=${{env.MEMORY}} \
             --cpu=${{env.CPU}} \
             --port=${{env.PORT}} \
