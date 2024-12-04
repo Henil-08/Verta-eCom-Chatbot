@@ -9,7 +9,7 @@ In addition to real-time functionality, the system integrates with **LangFuse An
 ---
 
 ## **Detailed Architecture**
-![System Architecture](/media/workflow.pngg)
+![System Architecture](/media/workflow.png)
 ### **Core Components**
 
 1. **Supervisor Module**:  
