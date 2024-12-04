@@ -152,4 +152,3 @@ This pipeline leverages the following libraries and tools:
 - **FAISS** for vector storage.
 
 For further questions, please contact the development team.
-
