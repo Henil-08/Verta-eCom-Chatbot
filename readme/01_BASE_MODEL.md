@@ -9,7 +9,7 @@ Additionally, the system features integration with **LangFuse Analytics**, which
 ---
 
 ## **Detailed Architecture**
-
+![System Architecture](/media/workflow.png)
 ### **Core Components**
 
 1. **Supervisor Module**:  
@@ -40,13 +40,12 @@ Additionally, the system features integration with **LangFuse Analytics**, which
 ```mermaid
 flowchart TD
     start[User Query]
-    start --> supervisor["Supervisor Module"]
-    supervisor -->|Metadata Query| metadataRetriever["Metadata Retriever"]
+    start --> supervisor["Supervisor (Gpt-4o-mini)"]
+    supervisor -->|Metadata Query| summarizer["Metadata Summarizer (Llama 3.1 8b)"]
     supervisor -->|Unstructured Query| vectorstore["Vectorstore Retriever"]
-    metadataRetriever --> summarizer["Metadata Summarizer"]
-    vectorstore --> mainllm["Main LLM (ChatGPT or LLaMA)"]
+    vectorstore --> mainllm["Main LLM (LLaMA 3.1 70B)"]
     summarizer --> mainllm
-    mainllm --> followup["Follow-up Question Generator"]
+    mainllm --> followup["Follow-up Question Generator (Llama 3.1 8b)"]
     followup --> response["Response to User"]
     response --> langfuse["LangFuse Analytics"]
 ```

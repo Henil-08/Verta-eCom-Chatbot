@@ -1,6 +1,6 @@
-# **Cost Analysis and Resource Usage for eCom-Chatbot on GCP**
+# **Cost Analysis and Resource Usage for Verta Chatbot on GCP**
 
-This report provides a detailed breakdown of the costs incurred while deploying and operating the **eCom-Chatbot** on **Google Cloud Platform (GCP)**. We'll go over each service used, what drove the costs, and how these costs can be optimized moving forward. The goal is to ensure efficient usage of resources while maintaining high performance and scalability for the project.
+This report provides a detailed breakdown of the costs incurred while deploying and operating the **Verta Chatbot** on **Google Cloud Platform (GCP)**. We'll go over each service used, what drove the costs, and how these costs can be optimized moving forward. The goal is to ensure efficient usage of resources while maintaining high performance and scalability for the project.
 
 ---
 
