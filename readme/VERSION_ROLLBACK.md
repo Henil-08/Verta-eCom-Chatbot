@@ -26,6 +26,7 @@ This document details the rollback mechanism, model evaluation pipeline, failure
 ---
 
 ## **Cloud Run Rollback Process**
+![Google Cloud System Rollback](/media/image_rollback.png)
 
 ### **How Rollback Works in Cloud Run**
 

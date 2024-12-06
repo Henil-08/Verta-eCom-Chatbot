@@ -1,36 +1,38 @@
-# **Base Model RAG Chatbot Architecture**
+# **'Verta Chatbot' Base Model RAG Chatbot Architecture**
 
 ## **Overview**
 
-The **Base Model RAG (Retrieve-and-Generate)** Chatbot architecture is a robust solution for processing user queries in real time with high accuracy and contextual relevance. By combining advanced retrieval techniques with state-of-the-art generative models, the chatbot provides precise and engaging responses. The system seamlessly integrates multiple components, including retrieval systems, metadata summarization modules, and language models, all orchestrated by a centralized **Supervisor Module**.
+The **Base Model RAG (Retrieval Augment-Generation)** Chatbot architecture is a robust solution for processing user queries in real time with high accuracy and contextual relevance. By combining advanced retrieval techniques with state-of-the-art generative models, the chatbot provides precise and engaging responses. The system seamlessly integrates multiple components, including retrieval systems, metadata summarization modules, and language models, all orchestrated by a centralized **Supervisor Module**.
 
 Additionally, the system features integration with **LangFuse Analytics**, which ensures comprehensive monitoring of query traces, token usage, and cost efficiency. This modular and scalable architecture is optimized for real-world applications in product information retrieval, customer support, and interactive recommendations.
 
 ---
 
 ## **Detailed Architecture**
-![System Architecture](/media/workflow.png)
+![System Architecture](/media/workflow.jpeg)
 ### **Core Components**
 
 1. **Supervisor Module**:  
+  **Model:** gpt-4o-mini
    The central decision-making module that dynamically routes queries to appropriate processing pipelines.
 
-2. **Metadata Retriever**:  
-   Fetches structured data such as product details, user reviews, and specifications, preloaded from APIs or vector databases.
-
-3. **Vectorstore Retriever**:  
-   Handles the retrieval of unstructured data, including long-form user reviews and product descriptions, using FAISS-based similarity searches.
-
-4. **Metadata Summarizer**:  
+2. **Metadata**:  
+  **Model:** llama3.1-8b
    Summarizes retrieved structured metadata into concise, user-friendly responses.
 
-5. **Main LLM (e.g., ChatGPT or LLaMA)**:  
+3. **Vectorstore Retriever**:  
+  **Database:** FAISS Vectorstore DB
+   Handles the retrieval of unstructured data, including long-form user reviews and product descriptions, using FAISS-based similarity searches.
+
+4. **Generate**:  
+  **Model:** llama3.1-70b
    Combines contextual data, metadata summaries, and user inputs to generate the final response.
 
-6. **Follow-up Question Generator**:  
+5. **Follow-up Question Generator**:  
+  **Model:** llama3.1-8b
    Dynamically formulates follow-up questions to enhance user engagement and clarify incomplete queries.
 
-7. **LangFuse Analytics**:  
+6. **LangFuse Analytics**:  
    Monitors the entire pipeline, providing metrics on trace logs, token usage, API performance, and query costs.
 
 ---
@@ -65,11 +67,10 @@ flowchart TD
 
 ---
 
-### **2. Metadata Retriever**
+### **2. Metadata Summarizer**
 - **Role**:
-   - Fetches preloaded structured data, such as product metadata, from APIs or vector databases.
+   - Summarizes preloaded structured data, such as product metadata, from APIs or vector databases.
 - **Workflow**:
-   - Connects to APIs or vector databases to retrieve details such as product features, pricing, and reviews.
    - Outputs structured data for downstream processing by the Metadata Summarizer.
 - **Use Case**:
    - Querying product-specific information like “What are the features of Product X?”
