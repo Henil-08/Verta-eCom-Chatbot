@@ -6,11 +6,23 @@ The **Base Model RAG (Retrieval Augment-Generation)** Chatbot architecture is a 
 
 Additionally, the system features integration with **LangFuse Analytics**, which ensures comprehensive monitoring of query traces, token usage, and cost efficiency. This modular and scalable architecture is optimized for real-world applications in product information retrieval, customer support, and interactive recommendations.
 
----
-
 ## **Detailed Architecture**
 ![System Architecture](/media/workflow.jpeg)
+![Architecture Model Pipeline](../media/System_Architecture.png)
 ### **Core Components**
+
+
+
+| **Component**               | **Description**                                                                                                      | **Tools Used**                                                   |
+|------------------------------|----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| **Supervisor Module**        | Routes user queries to the appropriate pipeline (metadata summarization or vector-based retrieval).                  | GPT-4o-mini, LangFuse for decision trace logging.                |
+| **Metadata Summarizer**      | Processes structured product metadata (e.g., specifications, pricing) into human-readable summaries.                 | Llama3.1-8B                                                     |
+| **Vectorstore Retriever**    | Retrieves relevant unstructured data (e.g., product reviews) based on vector similarity.                             | PostgreSQL + FAISS, HuggingFace MiniLM.                         |
+| **Main LLM**                 | Combines inputs from various modules to generate a cohesive and contextually accurate response.                      | Llama3.1-70B                                                    |
+| **Follow-up Question Generator** | Suggests follow-up questions based on generated responses and query context to enhance engagement.                  | Llama3.1-8B                                                     |
+| **LangFuse Analytics**       | Monitors system performance, tracks token usage, query latency, and generates detailed cost reports.                 | LangFuse                                                        |
+
+---
 
 1. **Supervisor Module**:  
   **Model:** gpt-4o-mini
@@ -44,7 +56,7 @@ flowchart TD
     start[User Query]
     start --> supervisor["Supervisor (Gpt-4o-mini)"]
     supervisor -->|Metadata Query| summarizer["Metadata Summarizer (Llama 3.1 8b)"]
-    supervisor -->|Unstructured Query| vectorstore["Vectorstore Retriever"]
+    supervisor -->|Unstructured Query| vectorstore["Vectorstore Retriever (PostgreSQL + FAISS)"]
     vectorstore --> mainllm["Main LLM (LLaMA 3.1 70B)"]
     summarizer --> mainllm
     mainllm --> followup["Follow-up Question Generator (Llama 3.1 8b)"]
@@ -86,6 +98,18 @@ flowchart TD
    - Converts textual data into vector embeddings using HuggingFace's MiniLM.
    - Stores and retrieves embeddings using FAISS for fast similarity-based searches.
    - Fetches contextually relevant documents for user queries.
+   Handles unstructured data retrieval using vector similarity techniques.
+
+**Workflow**:  
+1. Embeddings are precomputed using **HuggingFace MiniLM** and stored in **PostgreSQL + FAISS**.
+2. For a given query, retrieves the most relevant documents or reviews.
+3. Passes the retrieved context to the Main LLM.
+
+**Tools**:
+- **PostgreSQL** for data storage.
+- **FAISS** for fast vector similarity searches.
+- **HuggingFace MiniLM** for generating embeddings.
+
 - **Example**:
    - Query: "What do users say about noise cancellation in this product?"
    - Retrieves: Top relevant reviews mentioning noise cancellation.
