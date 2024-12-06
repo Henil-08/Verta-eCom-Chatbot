@@ -7,7 +7,6 @@ The **Base Model RAG (Retrieval Augment-Generation)** Chatbot architecture is a 
 Additionally, the system features integration with **LangFuse Analytics**, which ensures comprehensive monitoring of query traces, token usage, and cost efficiency. This modular and scalable architecture is optimized for real-world applications in product information retrieval, customer support, and interactive recommendations.
 
 ## **Detailed Architecture**
-![System Architecture](/media/workflow.jpeg)
 ![Architecture Model Pipeline](../media/System_Architecture.png)
 ### **Core Components**
 
