@@ -1,6 +1,6 @@
-# **Cost Analysis and Resource Usage for eCom-Chatbot on GCP**
+# **Cost Analysis and Resource Usage for Verta Chatbot on GCP**
 
-This report provides a detailed breakdown of the costs incurred while deploying and operating the **eCom-Chatbot** on **Google Cloud Platform (GCP)**. We'll go over each service used, what drove the costs, and how these costs can be optimized moving forward. The goal is to ensure efficient usage of resources while maintaining high performance and scalability for the project.
+This report provides a detailed breakdown of the costs incurred while deploying and operating the **Verta Chatbot** on **Google Cloud Platform (GCP)**. We'll go over each service used, what drove the costs, and how these costs can be optimized moving forward. The goal is to ensure efficient usage of resources while maintaining high performance and scalability for the project.
 
 ---
 
@@ -14,6 +14,7 @@ The total cost for this billing cycle amounted to **$208.60**, with the followin
 The structure and the need for these services are directly tied to the project’s complexity and scalability requirements.
 
 ---
+![Google Cloud Cost ](/media/costreport.png)
 
 ## **Cost Breakdown**
 
@@ -29,6 +30,39 @@ The structure and the need for these services are directly tied to the project�
 | **Compute Engine**                           | $0.00          | Not actively used during this billing cycle.                                                     |
 
 ---
+# **ChatGPT Model Token Cost**
+
+As part of the chatbot architecture, ChatGPT (GPT-4.0 Mini) is used for generating responses. Token usage and associated costs are monitored to ensure optimal resource utilization.
+
+---
+
+## **Token Costs**
+
+| **Model Name**  | **Input Cost (/1k tokens)** | **Output Cost (/1k tokens)** | **Total Cost (/1k tokens)** |
+|------------------|-----------------------------|------------------------------|-----------------------------|
+| **GPT-4 Mini**   | $0.01                      | $0.03                       | $0.04                      |
+
+---
+
+## **Example Cost Calculation**
+
+For a query with **1,500 input tokens** and **450 output tokens**:
+
+- **Input Cost**: `1.5 × 0.01 = $0.015`
+- **Output Cost**: `0.45 × 0.03 = $0.0135`
+- **Total Query Cost**: `$0.015 + $0.0135 = $0.0285`
+
+---
+
+## **Monthly Token Usage Breakdown**
+
+| **Metric**                 | **Value**           |
+|-----------------------------|---------------------|
+| **Average Query Tokens**    | 2,500 (Input + Output) |
+| **Monthly Queries**         | 50,000             |
+| **Total Tokens**            | 125,000,000        |
+| **Estimated Monthly Cost**  | $5,000             |
+
 
 ### **1. Cloud SQL ($110.31)**
 

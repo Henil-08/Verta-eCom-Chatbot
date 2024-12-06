@@ -1,4 +1,4 @@
-# TestIngestion Pipeline Documentation
+# Test Ingestion Pipeline Documentation
 
 This document outlines the workflow, components, and functionality of the `test_ingestion` pipeline for the **Verta Chatbot**. It provides detailed steps to guide users and developers in understanding and leveraging the pipeline for synthetic test case generation.
 
