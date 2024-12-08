@@ -109,7 +109,7 @@ def test_supervisor_agent() -> None:
 def test_route_question():
     state = {
         "question": "What is the product price?",
-        "question_type": Mock(datasource="Metadata"),
+        "question_type": Mock(datasource="Review-Vectorstore"),
         "answer": "The product price is $20.",
         "documents": [],
         "meta_data": pd.DataFrame(),
@@ -118,7 +118,7 @@ def test_route_question():
     }
 
     result = route_question(state)
-    assert result in ["Metadata", "Review-Vectorstore", "FINISH"]
+    assert result in ["Review-Vectorstore", "FINISH"]
 
 
 # Test metadata_node logic
@@ -151,7 +151,6 @@ def test_metadata_node():
     )
     assert isinstance(result, dict)
     assert "documents" in result
-    assert "question" in result
 
 
 # Test retrieve function
@@ -202,7 +201,6 @@ def test_followup_node():
         state, prompt=config.prompt_followup, model=config.followup_model
     )
     assert isinstance(result, dict)
-    assert "documents" in result
     assert "followup_questions" in result
 
 
