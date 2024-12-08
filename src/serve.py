@@ -203,14 +203,13 @@ async def invoke(
         )
 
     agent = clapp.app
-    config = {"configurable": {"thread_id": f"{cache_key}"}}
-
+    
     if payload.log_langfuse:
         run_id = str(uuid.uuid4())
         langfuse_handler = CallbackHandler(
             user_id=f"{payload.user_id}", session_id=f"{cache_key}"
         )
-        config.update({"callbacks": [langfuse_handler], "run_id": run_id})
+        config = {"callbacks": [langfuse_handler], "run_id": run_id}
     try:
         response = await agent.ainvoke(
             {
@@ -269,13 +268,12 @@ async def message_generator(
         )
 
     agent = clapp.app
-    config = {"configurable": {"thread_id": f"{cache_key}"}}
     if payload.log_langfuse:
         run_id = str(uuid.uuid4())
         langfuse_handler = CallbackHandler(
             user_id=f"{payload.user_id}", session_id=f"{cache_key}"
         )
-        config.update({"callbacks": [langfuse_handler], "run_id": run_id})
+        config = {"callbacks": [langfuse_handler], "run_id": run_id}
     if payload.stream_tokens == 0:
         stream_tokens = False
 

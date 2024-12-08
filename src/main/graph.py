@@ -16,7 +16,7 @@ class Graph:
         self.config = config
 
     
-    def create_graph(self, isMemory=True) -> CompiledStateGraph:
+    def create_graph(self, isMemory=False) -> CompiledStateGraph:
         memory = MemorySaver()
         builder = StateGraph(MultiAgentState)
 
@@ -39,7 +39,8 @@ class Graph:
 
         builder.add_conditional_edges("supervisor", node.route_question, CONDITIONAL_MAP)
 
-        builder.add_edge(START, "supervisor")
+        builder.add_edge(START, "Metadata")
+        builder.add_edge("Metadata", "supervisor")
         builder.add_edge("generate", "final")
         builder.add_edge("final", END)
 

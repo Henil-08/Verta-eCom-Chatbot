@@ -23,7 +23,7 @@ class PrepareBaseTrainingPipeline:
     def __init__(self):
         pass
 
-    def graph(self, isMemory=True) -> CompiledStateGraph:
+    def graph(self, isMemory=False) -> CompiledStateGraph:
         config = ConfigurationManager()
         prepare_base_model_config = config.get_prepare_base_model_config()
         prepare_base_model = Graph(config=prepare_base_model_config)

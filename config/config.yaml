@@ -5,7 +5,7 @@ prepare_base_model:
   supervisor_model: gpt-4o-mini
   metadata_model: llama-3.1-8b-instant
   base_model: llama-3.1-70b-versatile
-  followup_model: llama-3.1-8b-instant
+  followup_model: llama-3.1-70b-versatile
 
 
 test_ingestion:

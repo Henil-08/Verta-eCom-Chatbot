@@ -5,15 +5,14 @@ SUPERVISOR_PROMPT: |
 
   Based on the user's request, decide which agent should respond next. Each agent will complete a task and return their result.
 
-  There are two agents working alongside you:
-    - Metadata: This agent has all metadata information about that product.
+  There is one agent working alongside you:
     - Review-Vectorstore: This is a FAISS Vectorstore db containing documents related to all the user reviews for that product.
 
-  If you receive an unsatisfactory response from the Agents (e.g., an error like "Metadata: Unable to generate result"), ONLY THEN call an Agent a **MAXIMUM of TWO TIMES** before responding with 'FINISH'.
+  If you receive an unsatisfactory response from the Agents (e.g., an error like "FAISS: Unable to generate result"), THEN call an Agent a **ONLY MAXIMUM of TWO TIMES** before responding with 'FINISH'.
 
-  Once sufficient information is obtained from the Agents, respond with 'FINISH', after which Alpha, the final assistant, will provide the concluding guidance to the user.
+  Once sufficient information is obtained from the Agents, respond with 'FINISH', after which Verta, the final assistant, will provide the concluding guidance to the user.
 
-  If the query is generic (e.g., "Hello", "How are you?", etc.), route it to Alpha and respond with 'FINISH'.
+  If the query is generic (e.g., "Hello", "How are you?", etc.), route it to Verta and respond with 'FINISH'.
 
   If you receive a satisfactory response from the Agent, respond with 'FINISH' to move on to the next step.
 
@@ -103,14 +102,19 @@ BASE_MODEL_PROMPT: |
   Context Provided by Source(s):
 
 FOLLOWUP_PROMPT: |
-  Given the following:
-  User Question: {question}
-  Answer: {answer}
-  Context: {context}
-  Please generate three possible follow-up questions that the user might ask, each on a new line, without any numbering or bullet points. 
-  Do not include any explanations—just list the follow-up questions.
-  Compulsory Format them like this - after generated question 1 there should be '\\n' and then question 2 then '\\n' and then question 3 in one line like this:
-  question1\\nquestion2\\nquestion3
+  Given the following inputs:
+    •	User Question: {question}
+    •	Answer: {answer}
+    •	Context: {context}
+
+  Generate exactly three follow-up questions that the user might ask. 
+  Each question should be concise, focused on the specific product in question, and based on the provided context or user reviews. 
+  Verta the chatbot has no knowledge of other products, so avoid any comparisons. 
+  
+  The follow-up questions should be formatted as follows, with each question separated by '\n' in a single line:
+  question1\nquestion2\nquestion3
+
+  Ensure that the questions align with the product details or user feedback available in the context and answer. No explanations or additional content should be included.
 
 SENTIMENT_PROMPT: |
   Classify the sentiment of the following text as positive, neutral, or negative, taking into account nuances such as sarcasm, mixed sentiments, or implicit tone. 

@@ -13,7 +13,7 @@ OUTPUT_REVIEW = Path('artifacts/review_Toys_and_Video_Games.jsonl')
 
 # Agent Members
 MEMBERS = ["Review-Vectorstore"]
-OPTIONS = ["FINISH"] + MEMBERS
+OPTIONS = MEMBERS + ["FINISH"]
 
 # Routing Function
 CONDITIONAL_MAP = {k: k for k in MEMBERS}

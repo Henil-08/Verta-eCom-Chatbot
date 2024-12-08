@@ -6,9 +6,7 @@ from components.state import MultiAgentState
 
 def route_question(state):
     source = state['question_type']
-    if source.datasource == "Metadata":
-        return "Metadata"
-    elif source.datasource == "Review-Vectorstore":
+    if source.datasource == "Review-Vectorstore":
         return "Review-Vectorstore"
     elif source.datasource == "FINISH":
         return "FINISH"
@@ -38,7 +36,7 @@ def final_llm_node(state: MultiAgentState, prompt, model):
 
     generation = question_answer_chain.invoke({"context": documents, "input": question})
 
-    return {"documents": documents, "question": question, "answer": generation}
+    return {"answer": generation}
 
 
 def followup_node(state: MultiAgentState, prompt, model):
@@ -61,7 +59,7 @@ def followup_node(state: MultiAgentState, prompt, model):
                 )
     
     followup_chain = follow_prompt | llm
-    followup = followup_chain.invoke({'question': question, 'answer': answer.content, 'context': documents[-2:]}) # just consider last two document list 
-    followup_questions = followup.content.split('\n')
+    followup = followup_chain.invoke({'question': question, 'answer': answer.content, 'context': documents[-3:]}) # just consider last three document list 
+    followup_questions = followup.content.split("\\n")
     
-    return {"question": question, "answer": answer, "documents": documents, 'followup_questions': followup_questions}       
+    return {'followup_questions': followup_questions, "answer": answer}       
