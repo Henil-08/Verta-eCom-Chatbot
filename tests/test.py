@@ -212,7 +212,7 @@ async def test_health_endpoint():
     async with AsyncClient(app=app, base_url="http://localhost:80") as client:
         response = await client.get("/")
         assert response.status_code == status.HTTP_200_OK
-        assert response.json() == {"message": "Welcome to the Verta FastAPI app!"}
+        assert response.json() == {"status": "🤙"}
 
 
 @pytest.mark.asyncio
