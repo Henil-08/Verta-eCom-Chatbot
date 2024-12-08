@@ -64,15 +64,15 @@ os.environ["MS_TEAMS_WEBHOOK_URL"]=os.getenv("MS_TEAMS_WEBHOOK_URL")
 #     raise e
 
 
-STAGE_NAME = "Bias Detection"
-try:
-    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
-    bias_detection = BiasDetectionPipeline()
-    bias_detection.detect_bias()
-    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
-except Exception as e:
-    logger.exception(e)
-    raise e
+# STAGE_NAME = "Bias Detection"
+# try:
+#     logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+#     bias_detection = BiasDetectionPipeline()
+#     bias_detection.detect_bias()
+#     logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\n")
+# except Exception as e:
+#     logger.exception(e)
+#     raise e
 
 
 STAGE_NAME = "Failure Detection"
