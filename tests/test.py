@@ -150,7 +150,7 @@ def test_metadata_node():
         state, prompt=config.prompt_metadata, model=config.metadata_model
     )
     assert isinstance(result, dict)
-    assert "documents" in result
+    assert "meta_summary" in result
 
 
 # Test retrieve function
@@ -178,6 +178,7 @@ def test_retrieve():
 def test_final_llm_node():
     state = {
         "question": "Tell me more about the product.",
+        "meta_summary": Document(page_content="Product details."),
         "documents": [Document(page_content="Product details.")],
         "answer": "This product is amazing!",
     }
@@ -194,6 +195,7 @@ def test_followup_node():
     state = {
         "question": "Tell me more about the product.",
         "answer": Mock(content="This product is amazing!"),
+        "meta_summary": Document(page_content="Product details."),
         "documents": [Document(page_content="Product details.")],
     }
 

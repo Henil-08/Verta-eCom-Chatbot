@@ -38,11 +38,9 @@ def supervisor_agent(state: MultiAgentState, prompt, model):
     ).partial(options=str(OPTIONS), members=", ".join(MEMBERS))
 
     supervisor_chain = prompt | llm.with_structured_output(RouteQuery)
-    question_type = supervisor_chain.invoke({"question": question, 'document': [document for document in documents if document.metadata.get('source') != 'Metadata']})
-    
-    update_documents = [m for m in documents[-5:]] # Delete the previous documents in the memory to save context
+    question_type = supervisor_chain.invoke({"question": question, 'document': documents})
 
-    return {'question_type' : question_type, 'documents': update_documents}
+    return {'question_type' : question_type}
 
 
 def metadata_node(state: MultiAgentState, prompt, model):
@@ -95,7 +93,7 @@ def metadata_node(state: MultiAgentState, prompt, model):
         content = "Metadata: Unable to generate result"
         meta_results = Document(page_content=content, metadata={"source": "Metadata"})
 
-    return {'documents': [meta_results]}
+    return {'meta_summary': meta_results}
 
 
 def retrieve(state: MultiAgentState):

@@ -15,6 +15,7 @@ def route_question(state):
 def final_llm_node(state: MultiAgentState, prompt, model):
     question = state["question"]
     documents = state["documents"]
+    meta_summary = state["meta_summary"]
 
     if 'gpt' in model: 
         llm = ChatOpenAI(model_name=model)
@@ -22,7 +23,7 @@ def final_llm_node(state: MultiAgentState, prompt, model):
         llm = ChatGroq(model_name=model)
 
     system_prompt = (
-        f"{prompt}"
+        f"{prompt.format(product=meta_summary.page_content)}"
         "{context}"
     )
 
@@ -41,6 +42,7 @@ def final_llm_node(state: MultiAgentState, prompt, model):
 
 def followup_node(state: MultiAgentState, prompt, model):
     documents = state['documents']
+    meta_summary = state['meta_summary']
     question = state['question']
     answer = state['answer']
     
@@ -59,7 +61,7 @@ def followup_node(state: MultiAgentState, prompt, model):
                 )
     
     followup_chain = follow_prompt | llm
-    followup = followup_chain.invoke({'question': question, 'answer': answer.content, 'context': documents[-3:]}) # just consider last three document list 
-    followup_questions = followup.content.split("\\n")
+    followup = followup_chain.invoke({'question': question, 'answer': answer.content, 'product': meta_summary, 'context': documents[-3:]}) # just consider last three document list 
+    followup_questions = followup.content.replace("\\n", "\n").split("\n")
     
     return {'followup_questions': followup_questions, "answer": answer}       
