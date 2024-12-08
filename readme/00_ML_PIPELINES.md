@@ -38,7 +38,7 @@ flowchart TD
   - Integrates environment variables for secure API key access.
 - **Execution Command:**
   ```bash
-  python pipeline/stage_01_prepare_base_model.py
+  python src/pipeline/stage_01_prepare_base_model.py
   ```
 
 ---
@@ -53,7 +53,7 @@ flowchart TD
   - Creates RAGAS test datasets with varied difficulty levels.
 - **Execution Command:**
   ```bash
-  python pipeline/stage_02_test_data_ingestion.py
+  python src/pipeline/stage_02_test_data_ingestion.py
   ```
 
 ---
@@ -68,7 +68,7 @@ flowchart TD
   - Logs evaluation results in MLFlow for traceability.
 - **Execution Command:**
   ```bash
-  python pipeline/stage_03_model_evaluation.py
+  python src/pipeline/stage_03_model_evaluation.py
   ```
 
 ---
@@ -82,7 +82,7 @@ flowchart TD
   - Stores bias-related metrics for analysis.
 - **Execution Command:**
   ```bash
-  python pipeline/stage_04_bias_detection.py
+  python src/pipeline/stage_04_bias_detection.py
   ```
 
 ---
@@ -90,13 +90,13 @@ flowchart TD
 ### 5. **Failure Detection**
 - **File:** `stage_05_failure_detection.py`
 - **Purpose:**  
-  Detects and handles failures in the chatbot pipeline, ensuring robustness and reliability.
+  Detects and handles failures in the chatbot pipeline by sending notifications in teams channel, ensuring robustness and reliability.
 - **Key Features:**
   - Logs errors and exceptions.
-  - Provides mechanisms for retrying failed processes.
+  - Sends message to teams channel
 - **Execution Command:**
   ```bash
-  python pipeline/stage_05_failure_detection.py
+  python src/pipeline/stage_05_failure_detection.py
   ```
 
 ---
@@ -104,7 +104,9 @@ flowchart TD
 ## Directory Structure
 
 ```
-root/
+src/
+├── components/                # Nodes, States, and agents for langgraph workflow.
+├── config/                     # Configuration file setup for the pipelines.
 ├── constants/                 # Constant variables for pipeline configuration.
 ├── entity/                    # Data models for pipeline entities.
 ├── main/                      # Core modules for executing LangGraph workflows.
@@ -116,7 +118,7 @@ root/
 │   ├── stage_05_failure_detection.py
 ├── utils/                     # Utility scripts (e.g., database connections).
 ├── app.py                     # Main application script for Streamlit interface.
-└── README.md                  # Project documentation.
+├── serve.py                   # FastAPI application for API based communication.
 ```
 
 ---
@@ -143,33 +145,6 @@ DB_NAME=<your-db-name>
 
 ---
 
-## How to Run
-
-1. **Set Up Environment:**
-   - Clone the repository:
-     ```bash
-     git clone <repository-url>
-     cd <repository-folder>
-     ```
-   - Create a virtual environment and install dependencies:
-     ```bash
-     python -m venv venv
-     source venv/bin/activate
-     pip install -r requirements.txt
-     ```
-
-2. **Run Pipelines:**
-   Execute any stage by running the corresponding Python script. For example:
-   ```bash
-   python pipeline/stage_01_prepare_base_model.py
-   ```
-
-3. **Monitor Results:**
-   - Logs and results are stored in the `cache/` and `evaluation/` directories.
-   - MLFlow can be used for tracking evaluation metrics.
-
----
-
 ## Troubleshooting
 
 - **Database Connection Errors:**  
@@ -180,15 +155,5 @@ DB_NAME=<your-db-name>
 
 - **MLFlow Issues:**  
   Check the `mlflow_uri` configuration in `config.yaml`.
-
----
-
-## Acknowledgments
-
-This project uses the following tools:
-- **LangGraph**: For creating state graphs.
-- **FAISS**: For efficient vector storage.
-- **RAGAS**: For test case generation and evaluation.
-- **MLFlow**: For model tracking and registry.
 
 ---

@@ -1,10 +1,10 @@
-# **'Verta Chatbot' Base Model RAG Chatbot Architecture**
+# **'Verta Chatbot' Model Documentation**
 
 ## **Overview**
 
-The **Base Model RAG (Retrieval Augment-Generation)** Chatbot architecture is a robust solution for processing user queries in real time with high accuracy and contextual relevance. By combining advanced retrieval techniques with state-of-the-art generative models, the chatbot provides precise and engaging responses. The system seamlessly integrates multiple components, including retrieval systems, metadata summarization modules, and language models, all orchestrated by a centralized **Supervisor Module**.
+The **Verta (Base Model)** Chatbot architecture is a robust solution for processing user queries in real time with high accuracy and contextual relevance. By combining advanced retrieval techniques with state-of-the-art generative models, the chatbot provides precise and engaging responses. The system seamlessly integrates multiple components, including retrieval systems, metadata summarization modules, and language models, all orchestrated by a centralized **Supervisor Module**.
 
-Additionally, the system features integration with **LangFuse Analytics**, which ensures comprehensive monitoring of query traces, token usage, and cost efficiency. This modular and scalable architecture is optimized for real-world applications in product information retrieval, customer support, and interactive recommendations.
+The system also features integration with **LangFuse**, which ensures comprehensive monitoring of query traces, token usage, and cost efficiency. This modular and scalable architecture is optimized for real-world applications in product information retrieval, customer support, and interactive recommendations.
 
 ## **Detailed Architecture**
 ![Architecture Model Pipeline](../media/System_Architecture.png)
@@ -16,35 +16,10 @@ Additionally, the system features integration with **LangFuse Analytics**, which
 |------------------------------|----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
 | **Supervisor Module**        | Routes user queries to the appropriate pipeline (metadata summarization or vector-based retrieval).                  | GPT-4o-mini, LangFuse for decision trace logging.                |
 | **Metadata Summarizer**      | Processes structured product metadata (e.g., specifications, pricing) into human-readable summaries.                 | Llama3.1-8B                                                     |
-| **Vectorstore Retriever**    | Retrieves relevant unstructured data (e.g., product reviews) based on vector similarity.                             | PostgreSQL + FAISS, HuggingFace MiniLM.                         |
+| **Vectorstore Retriever**    | Retrieves relevant unstructured data (e.g., product reviews) based on vector similarity.                             | FAISS, HuggingFace MiniLM for embeddings.                         |
 | **Main LLM**                 | Combines inputs from various modules to generate a cohesive and contextually accurate response.                      | Llama3.1-70B                                                    |
 | **Follow-up Question Generator** | Suggests follow-up questions based on generated responses and query context to enhance engagement.                  | Llama3.1-8B                                                     |
-| **LangFuse Analytics**       | Monitors system performance, tracks token usage, query latency, and generates detailed cost reports.                 | LangFuse                                                        |
-
----
-
-1. **Supervisor Module**:  
-  **Model:** gpt-4o-mini
-   The central decision-making module that dynamically routes queries to appropriate processing pipelines.
-
-2. **Metadata**:  
-  **Model:** llama3.1-8b
-   Summarizes retrieved structured metadata into concise, user-friendly responses.
-
-3. **Vectorstore Retriever**:  
-  **Database:** FAISS Vectorstore DB
-   Handles the retrieval of unstructured data, including long-form user reviews and product descriptions, using FAISS-based similarity searches.
-
-4. **Generate**:  
-  **Model:** llama3.1-70b
-   Combines contextual data, metadata summaries, and user inputs to generate the final response.
-
-5. **Follow-up Question Generator**:  
-  **Model:** llama3.1-8b
-   Dynamically formulates follow-up questions to enhance user engagement and clarify incomplete queries.
-
-6. **LangFuse Analytics**:  
-   Monitors the entire pipeline, providing metrics on trace logs, token usage, API performance, and query costs.
+| **LangFuse**       | Monitors system performance, tracks token usage, query latency, and generates detailed cost reports.                 | LangFuse                                                        |
 
 ---
 
@@ -68,56 +43,27 @@ flowchart TD
 ## **Component Details**
 
 ### **1. Supervisor Module**
+- **Model:** gpt-4o-mini
 - **Role**:
    - Acts as the decision-making layer, routing queries based on their type (metadata vs. unstructured).
 - **Workflow**:
    - Receives user queries through the `dev/stream` API.
    - Routes queries to either the Metadata Retriever or the Vectorstore Retriever.
-- **Integration**:
-   - Logs routing decisions and processing times via LangFuse Analytics for transparency and performance monitoring.
 
----
-
-### **2. Metadata Summarizer**
-- **Role**:
-   - Summarizes preloaded structured data, such as product metadata, from APIs or vector databases.
-- **Workflow**:
-   - Outputs structured data for downstream processing by the Metadata Summarizer.
-- **Use Case**:
-   - Querying product-specific information like “What are the features of Product X?”
-- **LangFuse Integration**:
-   - Tracks API calls, retrieval efficiency, and associated costs.
-
----
-
-### **3. Vectorstore Retriever**
+### **2. Vectorstore Retriever**
+- **Database**: FAISS Vectorstore
+- **Embedding Model**: HuggingFace All-MiniLM-v6
 - **Role**:
    - Retrieves unstructured textual data (e.g., reviews, descriptions) using vector embeddings.
 - **Workflow**:
    - Converts textual data into vector embeddings using HuggingFace's MiniLM.
    - Stores and retrieves embeddings using FAISS for fast similarity-based searches.
    - Fetches contextually relevant documents for user queries.
-   Handles unstructured data retrieval using vector similarity techniques.
+   - Handles unstructured data retrieval using vector similarity techniques.
 
-**Workflow**:  
-1. Embeddings are precomputed using **HuggingFace MiniLM** and stored in **PostgreSQL + FAISS**.
-2. For a given query, retrieves the most relevant documents or reviews.
-3. Passes the retrieved context to the Main LLM.
 
-**Tools**:
-- **PostgreSQL** for data storage.
-- **FAISS** for fast vector similarity searches.
-- **HuggingFace MiniLM** for generating embeddings.
-
-- **Example**:
-   - Query: "What do users say about noise cancellation in this product?"
-   - Retrieves: Top relevant reviews mentioning noise cancellation.
-- **LangFuse Integration**:
-   - Tracks token usage for embeddings and retrieval operations.
-
----
-
-### **4. Metadata Summarizer**
+### **3. Metadata Summarizer**
+- **Model:** llama3.1-8b
 - **Role**:
    - Summarizes structured data into concise and readable formats.
 - **Workflow**:
@@ -126,12 +72,10 @@ flowchart TD
 - **Example**:
    - Input: Product metadata.
    - Output: "This product features lightweight design, noise cancellation, and a 10-hour battery life."
-- **LangFuse Integration**:
-   - Monitors token usage during summarization.
 
----
 
-### **5. Main LLM (e.g., ChatGPT or LLaMA)**
+### **4. Main LLM**
+- **Model:** llama3.1-70b
 - **Role**:
    - Synthesizes a comprehensive response by combining:
      - User inputs.
@@ -143,12 +87,9 @@ flowchart TD
 - **Example**:
    - Input: “What are the best features of this product?”
    - Output: "The product offers industry-leading noise cancellation, lightweight construction, and a battery life of 10 hours."
-- **LangFuse Integration**:
-   - Tracks token usage and API credits consumed during response generation.
 
----
-
-### **6. Follow-up Question Generator**
+### **5. Follow-up Question Generator**
+- **Model:** llama3.1-8b
 - **Role**:
    - Enhances the user experience by generating relevant follow-up questions.
 - **Workflow**:
@@ -156,12 +97,10 @@ flowchart TD
    - Suggests clarifying or exploratory follow-up queries.
 - **Example**:
    - "Would you like me to compare this product with similar options?"
-- **LangFuse Integration**:
-   - Logs generated follow-up questions and engagement metrics.
 
 ---
 
-### **7. LangFuse Analytics**
+### **6. LangFuse Analytics**
 - **Role**:
    - Monitors and logs operational metrics across the entire pipeline.
 - **Features**:

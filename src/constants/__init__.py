@@ -12,7 +12,7 @@ OUTPUT_META = Path('artifacts/meta_Toys_and_Video_Games.jsonl')
 OUTPUT_REVIEW = Path('artifacts/review_Toys_and_Video_Games.jsonl')
 
 # Agent Members
-MEMBERS = ["Metadata", "Review-Vectorstore"]
+MEMBERS = ["Review-Vectorstore"]
 OPTIONS = ["FINISH"] + MEMBERS
 
 # Routing Function
