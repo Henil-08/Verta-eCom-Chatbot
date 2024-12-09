@@ -35,7 +35,7 @@ root/
     ├── main.py                   # Module for executing the pipeline flows
     ├── serve.py                  # FastAPI Wrapped Verta-chatbot
 ├── Dockerfile                    # Docker configuration for containerization
-├── poetry.toml                   # Dependencies for the project managed by poetry
+├── pyproject.toml                # Dependencies for the project managed by poetry
 ├── requirements.txt              # Dependency requirements for the project
 └── README.md                     # Project documentation
 ```
