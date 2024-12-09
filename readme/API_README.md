@@ -1,17 +1,23 @@
-# API Documentation for Verta (Serve.py)
+# API Documentation for Verta Chatbot
 
-This API is designed to handle user input through Verta and return responses, with support for both streaming and non-streaming modes. We used FastAPI to deploy the Verta REST API to GCP Cloud Run so it automatically comes with the models at the /docs route e.g. https://verta-chat-service-403080441770.us-east1.run.app/docs
+This API is designed to handle user input through Verta and return responses, with support for both streaming and non-streaming modes. We used FastAPI to deploy the Verta REST API to GCP Cloud Run so it automatically comes with the models at the /docs route e.g. https://verta-chat-service-269431978711.us-east1.run.app/docs
 
 You can use this interface to see & test all API endpoints.
+
+---
 
 ## Base URL
 
 ```
-https://verta-chat-service-403080441770.us-east1.run.app
+https://verta-chat-service-269431978711.us-east1.run.app
 ```
+
+---
 
 ## Authorization
 The API has user protected endpoints that require a bearer token that we have assigned and will Slack to you.
+
+---
 
 ## Endpoints
 
@@ -51,7 +57,6 @@ when service is up; not user protected
 
 ```
 
----
 
 ### 3. `/score`
 
@@ -91,7 +96,6 @@ when service is up; not user protected
 
 Returns **500 Bad Request** if failed to add user-feedback
 
----
 
 ### 4. `/dev-invoke`
 
@@ -140,8 +144,6 @@ Returns **500 Bad Request** if failed to add user-feedback
 | question          | string | The user query or question submitted.                                   |
 | answer            | string | The agent's full response.                                              |
 | followup_questions| array  | Suggested follow-up questions based on the answer.                      |
-
----
 
 ### 5. `/dev-stream`
 

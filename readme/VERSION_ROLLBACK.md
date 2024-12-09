@@ -1,4 +1,4 @@
-# **eCom-Chatbot: Model Rollback, Evaluation, and Deployment Pipelines**
+# **Verta-Chatbot: Model Rollback, Evaluation, and Deployment Pipelines**
 
 ## **Overview**
 

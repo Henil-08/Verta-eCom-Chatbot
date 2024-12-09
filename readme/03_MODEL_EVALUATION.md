@@ -191,6 +191,4 @@ This pipeline leverages the following libraries and tools:
 - **FAISS** for vector storage.
 - **MLFlow** for model tracking and registry.
 
-For further questions, please contact the development team.
-
 ---

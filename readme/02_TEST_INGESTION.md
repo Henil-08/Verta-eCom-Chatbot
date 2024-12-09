@@ -35,8 +35,6 @@ The `TestIngestion` class is initialized with:
 
 The initialization step also generates a unique UUID for each ASIN to ensure traceability.
 
----
-
 ### 2. **Load Product Data**
 The `load_product_data(asin)` function:
 - Connects to a database using credentials from environment variables.
@@ -44,8 +42,6 @@ The `load_product_data(asin)` function:
   - **Reviews**: Data about user reviews for the product.
   - **Metadata**: Product details, including category, rating, price, and features.
 
-
----
 
 ### 3. **Generate Metadata Summary**
 The `generate_meta_summary(meta_df, prompt)` function:
@@ -56,14 +52,11 @@ The `generate_meta_summary(meta_df, prompt)` function:
   - Generate a response through a `ChatPromptTemplate`.
 
 
----
-
 ### 4. **Create Documents**
 The `create_docs(review_df, meta_df)` function:
 - Converts review data into **LangChain documents** using `DataFrameLoader`.
 - Prepends a metadata summary document to the list of review documents.
 
----
 
 ### 5. **Generate RAGAS Testset**
 The `get_ragas_testset(doc, with_debugging_logs=False)` function:
@@ -76,7 +69,6 @@ The `get_ragas_testset(doc, with_debugging_logs=False)` function:
   - **Reasoning**: 25%
   - **Multi-Context**: 25%
 
----
 
 ### 6. **Transform Testset**
 The `transform_ragas_testset_df(testset, asin)` function:
@@ -84,7 +76,6 @@ The `transform_ragas_testset_df(testset, asin)` function:
 - Adds a column for `parent_asin`.
 - Drops unused columns like `metadata` and `episode_done`.
 
----
 
 ### 7. **Save UUIDs and Testsets**
 The `save_hash(hash)` function:
@@ -150,5 +141,3 @@ This pipeline leverages the following libraries and tools:
 - **LangGraph** for the state graph.
 - **RAGAS** for synthetic test case generation.
 - **FAISS** for vector storage.
-
-For further questions, please contact the development team.

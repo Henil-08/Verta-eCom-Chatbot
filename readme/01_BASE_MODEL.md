@@ -14,11 +14,11 @@ The system also features integration with **LangFuse**, which ensures comprehens
 
 | **Component**               | **Description**                                                                                                      | **Tools Used**                                                   |
 |------------------------------|----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
-| **Supervisor Module**        | Routes user queries to the appropriate pipeline (metadata summarization or vector-based retrieval).                  | GPT-4o-mini, LangFuse for decision trace logging.                |
 | **Metadata Summarizer**      | Processes structured product metadata (e.g., specifications, pricing) into human-readable summaries.                 | Llama3.1-8B                                                     |
+| **Supervisor Module**        | Routes user queries to the appropriate pipeline (metadata summarization or vector-based retrieval).                  | GPT-4o-mini, LangFuse for decision trace logging.                |
 | **Vectorstore Retriever**    | Retrieves relevant unstructured data (e.g., product reviews) based on vector similarity.                             | FAISS, HuggingFace MiniLM for embeddings.                         |
 | **Main LLM**                 | Combines inputs from various modules to generate a cohesive and contextually accurate response.                      | Llama3.1-70B                                                    |
-| **Follow-up Question Generator** | Suggests follow-up questions based on generated responses and query context to enhance engagement.                  | Llama3.1-8B                                                     |
+| **Follow-up Question Generator** | Suggests follow-up questions based on generated responses and query context to enhance engagement.                  | Llama3.1-70B                                                     |
 | **LangFuse**       | Monitors system performance, tracks token usage, query latency, and generates detailed cost reports.                 | LangFuse                                                        |
 
 ---
@@ -28,11 +28,11 @@ The system also features integration with **LangFuse**, which ensures comprehens
 ```mermaid
 flowchart TD
     start[User Query]
-    start --> supervisor["Supervisor (Gpt-4o-mini)"]
-    supervisor -->|Metadata Query| summarizer["Metadata Summarizer (Llama 3.1 8b)"]
-    supervisor -->|Unstructured Query| vectorstore["Vectorstore Retriever (PostgreSQL + FAISS)"]
-    vectorstore --> mainllm["Main LLM (LLaMA 3.1 70B)"]
-    summarizer --> mainllm
+    start --> summarizer["Metadata Summarizer (Llama 3.1 8b)"]
+    summarizer["Metadata Summarizer (Llama 3.1 8b)"] --> supervisor["Supervisor (Gpt-4o-mini)"]
+    supervisor -->|Unstructured Query| vectorstore["Vectorstore Retriever (FAISS)"]
+    supervisor -->|General Query| mainllm["Main LLM (LLaMA 3.1 70B)"]
+    vectorstore --> supervisor
     mainllm --> followup["Follow-up Question Generator (Llama 3.1 8b)"]
     followup --> response["Response to User"]
     response --> langfuse["LangFuse Analytics"]
@@ -42,27 +42,7 @@ flowchart TD
 
 ## **Component Details**
 
-### **1. Supervisor Module**
-- **Model:** gpt-4o-mini
-- **Role**:
-   - Acts as the decision-making layer, routing queries based on their type (metadata vs. unstructured).
-- **Workflow**:
-   - Receives user queries through the `dev/stream` API.
-   - Routes queries to either the Metadata Retriever or the Vectorstore Retriever.
-
-### **2. Vectorstore Retriever**
-- **Database**: FAISS Vectorstore
-- **Embedding Model**: HuggingFace All-MiniLM-v6
-- **Role**:
-   - Retrieves unstructured textual data (e.g., reviews, descriptions) using vector embeddings.
-- **Workflow**:
-   - Converts textual data into vector embeddings using HuggingFace's MiniLM.
-   - Stores and retrieves embeddings using FAISS for fast similarity-based searches.
-   - Fetches contextually relevant documents for user queries.
-   - Handles unstructured data retrieval using vector similarity techniques.
-
-
-### **3. Metadata Summarizer**
+### **1. Metadata Summarizer**
 - **Model:** llama3.1-8b
 - **Role**:
    - Summarizes structured data into concise and readable formats.
@@ -72,6 +52,26 @@ flowchart TD
 - **Example**:
    - Input: Product metadata.
    - Output: "This product features lightweight design, noise cancellation, and a 10-hour battery life."
+
+
+### **2. Supervisor Module**
+- **Model:** gpt-4o-mini
+- **Role**:
+   - Acts as the decision-making layer, routing queries based on their type (metadata vs. unstructured).
+- **Workflow**:
+   - Receives user queries through the `dev/stream` API.
+   - Routes queries to either the Metadata Retriever or the Vectorstore Retriever.
+
+### **3. Vectorstore Retriever**
+- **Database**: FAISS Vectorstore
+- **Embedding Model**: HuggingFace All-MiniLM-v6
+- **Role**:
+   - Retrieves unstructured textual data (e.g., reviews, descriptions) using vector embeddings.
+- **Workflow**:
+   - Converts textual data into vector embeddings using HuggingFace's MiniLM.
+   - Stores and retrieves embeddings using FAISS for fast similarity-based searches.
+   - Fetches contextually relevant documents for user queries.
+   - Handles unstructured data retrieval using vector similarity techniques.
 
 
 ### **4. Main LLM**
@@ -89,7 +89,7 @@ flowchart TD
    - Output: "The product offers industry-leading noise cancellation, lightweight construction, and a battery life of 10 hours."
 
 ### **5. Follow-up Question Generator**
-- **Model:** llama3.1-8b
+- **Model:** llama3.1-70b
 - **Role**:
    - Enhances the user experience by generating relevant follow-up questions.
 - **Workflow**:
@@ -117,23 +117,22 @@ flowchart TD
 1. **User Query Submission**  
    - Users interact with the chatbot via the frontend interface, which sends queries to the backend through the `dev/stream` API.
 
-2. **Supervisor Routing**  
-   - The Supervisor Module determines whether the query relates to structured metadata or unstructured contextual data.
-
-3. **Data Retrieval**  
-   - Metadata queries → Metadata Retriever fetches structured data.
-   - Contextual queries → Vectorstore Retriever retrieves relevant unstructured data.
-
-4. **Metadata Summarization**  
+2. **Metadata Summarization**  
    - Summarizes structured metadata for clarity and brevity.
 
-5. **Response Generation**  
+3. **Supervisor Routing**  
+   - The Supervisor Module determines whether the query relates to main llm or unstructured contextual data.
+
+3. **Data Retrieval**  
+   - Contextual queries → Vectorstore Retriever retrieves relevant unstructured data.
+
+4. **Response Generation**  
    - The Main LLM combines all inputs to generate a coherent and relevant response.
 
-6. **Follow-up Engagement**  
+5. **Follow-up Engagement**  
    - A follow-up query is generated to improve user interaction and clarify ambiguous queries.
 
-7. **Analytics Logging**  
+6. **Analytics Logging**  
    - LangFuse logs the entire interaction, including token usage, trace data, and performance metrics.
 
 ---
@@ -143,18 +142,24 @@ flowchart TD
 ### **Request Example**
 ```json
 {
-  "query": "What are the features of this product?",
-  "parent_asin": "B08K2S3D2K",
-  "user_id": "user_12345",
-  "log_langfuse": true,
-  "stream_tokens": true
+   "query": "hello how are you?",
+   "parent_asin": "B072K6TLJX",
+   "user_id": "ABCD",
+   "log_langfuse": 1,
+   "stream_tokens": 1
 }
 ```
 
 ### **Response Example**
 ```json
 {
-  "response": "This product features noise cancellation, long battery life, and a sleek design.",
-  "follow_up": "Would you like me to compare this product with similar options?"
+    "run_id": "df46ac21-fc16-47a6-b970-12224d060cb0",
+    "question": "hello how are you?",
+    "answer": "Hello. I'm doing well, thank you for asking. I'm Verta, an advanced AI assistant here to help you with any product-related inquiries you may have. I'm ready to provide you with clear, accurate, and insightful responses to support your decision-making process. How can I assist you today?",
+    "followup_questions": [
+        "Is the Funko POP! Lord of the Rings Frodo Baggins 3.75 CHASE VARIANT Vinyl Figure suitable for display in an office setting?",
+        "Does the product come with a base or stand for display?",
+        "Is the vinyl figure safe for children under the age of 12 to play with?"
+    ]
 }
 ```

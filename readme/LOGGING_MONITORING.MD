@@ -4,20 +4,23 @@
 
 In this project, logging and monitoring are central to ensuring the chatbot operates smoothly and effectively. From tracking user queries to monitoring system performance, logs are invaluable in diagnosing issues, optimizing responses, and understanding user interactions. With **LangFuse Analytics**, **Google Cloud Run Logs**, and **Google Log Monitoring**, we have a powerful, comprehensive logging system to track and analyze the entire chatbot lifecycle.
 
-![Langfuse Continous Monitoring  ](media/Model_monitoring.png)
-
 Our logs help us:
 - Monitor query traces and user sessions.
 - Track token usage and LLM-generated responses.
 - Evaluate deployments, errors, and traffic spikes.
 - Keep everything in check—whether it’s the React UI traffic, backend API calls, or Cloud Run revisions.
 
+
+### Langfuse Dashboard
+![Langfuse Dashboard 1](../media/Langfuse_Dashboard.png)
+![Langfuse Dashboard 2](../media/Langfuse_Dashboard_1.png)
+
 ---
 
 ## **Logging System Breakdown**
 
-### **1. LangFuse Analytics**
-**LangFuse is our go-to tool for detailed session and query monitoring.** Every user query is traced step-by-step, from the time it’s received to the final response. This ensures we always know how the chatbot performs, where errors occur, and how tokens are being used.
+### **1. LangFuse Trace Analytics**
+**LangFuse is our go-to tool for detailed session and query monitoring.** Every user query is traced step-by-step, from the time it’s received to the final response. This ensures we always know how the chatbot performs, where errors occur, and how tokens are being used. Langfuse also helps in scoring user-feedback for a particular query for improving the model later on.
 
 #### **Key Features**
 - **Query Traces**:
@@ -33,7 +36,19 @@ Our logs help us:
 - **Feedback Integration**:
   Logs user feedback to evaluate and improve response accuracy.
 
-#### **Example LangFuse Trace**
+#### **What It Looks Like in the Dashboard**
+- **Session ID**: `4-B0B7X7PC83`
+- **Input Tokens**: 8,405
+- **Output Tokens**: 132
+- **Latency**: 5.56s
+- **Feedback**: User marked this response as helpful.
+
+*Langfuse helps in in-depth workflow tracing*
+![Langfuse Trace](../media/Trace.png)
+*Multiple Traces at once*
+![Langfuse Traces of questions  ](../media/Traces1.png)
+
+#### **Example LangFuse Feedback Scoring**
 ```python
 self.langfuse.score(
     id=id,
@@ -44,23 +59,9 @@ self.langfuse.score(
 )
 logger.info(f"Feedback Successful, 'trace_id': {trace_id}, 'id': {id}")
 ```
+![Langfuse Feedback Score](../media/Langfuse_Feedback_score.png)
 
-![Langfuse Traces ](media/Traces2.png)
-![Langfuse Traces of questions  ](media/Traces1.png)
-
-#### **What It Looks Like in the Dashboard**
-- **Session ID**: `4-B0B7X7PC83`
-- **Input Tokens**: 8,405
-- **Output Tokens**: 132
-- **Latency**: 5.56s
-- **Feedback**: User marked this response as helpful.
-
-
-
-
-![Langfuse Session Userwise ](../media/sessionlogging.png)
-
-
+Scores are human feedback given on a response from the model. We use these scores to analyze the response and prompt engineer it for improvement.
 
 ---
 
@@ -137,19 +138,25 @@ Here’s what gets logged every time the chatbot is used:
 ### **Example Request**
 ```json
 {
-  "query": "Tell me about this product.",
-  "parent_asin": "B08K2S3D2K",
-  "user_id": "user_9876",
-  "log_langfuse": true,
-  "stream_tokens": true
+  "query": "hello how are you?",
+  "parent_asin": "B072K6TLJX",
+  "user_id": "ABCD",
+  "log_langfuse": 1,
+  "stream_tokens": 1
 }
 ```
 
 ### **Example Response**
 ```json
 {
-  "response": "This product has excellent noise cancellation and a 10-hour battery life.",
-  "follow_up": "Would you like a comparison with similar products?"
+  "run_id": "df46ac21-fc16-47a6-b970-12224d060cb0",
+  "question": "hello how are you?",
+  "answer": "Hello. I'm doing well, thank you for asking. I'm Verta, an advanced AI assistant here to help you with any product-related inquiries you may have. I'm ready to provide you with clear, accurate, and insightful responses to support your decision-making process. How can I assist you today?",
+  "followup_questions": [
+      "Is the Funko POP! Lord of the Rings Frodo Baggins 3.75 CHASE VARIANT Vinyl Figure suitable for display in an office setting?",
+      "Does the product come with a base or stand for display?",
+      "Is the vinyl figure safe for children under the age of 12 to play with?"
+  ]
 }
 ```
 
@@ -158,16 +165,3 @@ Here’s what gets logged every time the chatbot is used:
 - **Session ID**: 4-XYZ123
 - **Latency**: 3.25 seconds
 - **Feedback**: Captured as "positive."
-
----
-
-## **Placeholder for Visuals**
-
-1. **LangFuse Dashboard Screenshot**:
-   - Trace logs showing token usage, latency, and feedback loops.
-
-2. **Cloud Run Revision Logs**:
-   - Deployment events and rollback steps.
-
-3. **Google Log Monitoring Dashboard**:
-   - API traffic patterns, error rates, and cost analytics.

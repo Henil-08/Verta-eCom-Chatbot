@@ -1,4 +1,4 @@
-# **Cost Analysis and Resource Usage for Verta Chatbot on GCP**
+# **Cost Analysis and Resource Usage for Hosting Verta Chatbot on GCP**
 
 This report provides a detailed breakdown of the costs incurred while deploying and operating the **Verta Chatbot** on **Google Cloud Platform (GCP)**. We'll go over each service used, what drove the costs, and how these costs can be optimized moving forward. The goal is to ensure efficient usage of resources while maintaining high performance and scalability for the project.
 
@@ -6,7 +6,7 @@ This report provides a detailed breakdown of the costs incurred while deploying 
 
 ## **Overview**
 
-The total cost for this billing cycle amounted to **$208.60**, with the following key contributors:
+The total cost for this billing cycle amounted to **$208.60** for the month of November 2024, with the following key contributors:
 1. **Cloud SQL**: The largest expense due to heavy database usage for storing and querying metadata, logs, and evaluation datasets.
 2. **Cloud Run**: Costs associated with serverless hosting for APIs and workflows.
 3. **Container Registry Vulnerability Scanning**: Reflecting our commitment to secure and compliant deployments.

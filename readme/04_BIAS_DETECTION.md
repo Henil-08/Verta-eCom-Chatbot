@@ -1,28 +1,10 @@
-# Model Bias Detection Pipeline Documentation
+# Bias Detection Pipeline Documentation
 
-This document outlines the workflow, components, and functionality of the bias_detection pipeline. It provides detailed steps to guide users and developers in understanding and leveraging the pipeline for detecting bias in product reviews.
+This document outlines the workflow, components, and functionality of the `bias_detection` pipeline for the **Verta Chatbot**. It provides detailed steps to guide users and developers in understanding and leveraging the pipeline for detecting bias in product reviews.
 
 ## **Overview**
 
-The bias_detection pipeline detects biases in product reviews by combining sentiment analysis, embeddings, and metadata analysis. The detection criteria include over-reliance on negative reviews, lack of acknowledgment of sparse data, and imbalanced sentiment representation. The pipeline supports modular experimentation by allowing parameter and configuration adjustments in the config/ directory.
-
----
-
-## **Directory Structure**
-
-```
-root/
-├── config/
-    ├── config.yaml              # Defines parameters for all the pipelines.
-    ├── prompts.yaml            # Stores the LLM prompts for generating responses.
-├── cache/
-    ├── faiss/                  # Directory for storing FAISS vector databases.
-    ├── metadata/               # Stores product metadata in CSV format.
-├── evaluation/
-    ├── metrics/                # Stores bias metrics.
-    ├── results/                # Stores base results as parquets to be read.
-    ├── testset/                # Contains test datasets in Parquet format.
-```
+The `bias_detection` pipeline detects biases in product reviews by combining sentiment analysis, embeddings, and metadata analysis. The detection criteria include over-reliance on negative reviews, lack of acknowledgment of sparse data, and imbalanced sentiment representation. The pipeline supports modular experimentation by allowing parameter and configuration adjustments in the config/ directory.
 
 ---
 
@@ -172,10 +154,5 @@ Improve robustness to handle cases where certain products have no reviews or whe
 
 This pipeline leverages the following libraries and tools:
 
-HuggingFace Transformers: For embeddings and sentiment analysis.
-SQLAlchemy: For database connectivity.
-
-
-For further questions, please contact the development team.
-
----
+  - **HuggingFace Transformers**: For embeddings and sentiment analysis.
+  - **SQLAlchemy**: For database connectivity.
