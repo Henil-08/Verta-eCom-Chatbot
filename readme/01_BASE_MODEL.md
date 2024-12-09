@@ -7,7 +7,7 @@ The **Verta (Base Model)** Chatbot architecture is a robust solution for process
 The system also features integration with **LangFuse**, which ensures comprehensive monitoring of query traces, token usage, and cost efficiency. This modular and scalable architecture is optimized for real-world applications in product information retrieval, customer support, and interactive recommendations.
 
 ## **Detailed Architecture**
-![Architecture Model Pipeline](../media/System_Architecture.png)
+![Architecture Model Pipeline](../media/base_model.png)
 ### **Core Components**
 
 
