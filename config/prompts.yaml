@@ -104,13 +104,16 @@ BASE_MODEL_PROMPT: |
 
 FOLLOWUP_PROMPT: |
   Given the following inputs:
-    •	User Question: {question}
-    •	Answer: {answer}
-    •	Product Information: {product}
-    •	Context: {context}
+    •	**User Question:** {question}
+
+    •	**Answer:** {answer}
+
+    •	**Product Information:** {product}
+    
+    •	**Context:** {context}
 
   Generate exactly three follow-up questions that the user might ask. 
-  Each question should be concise, focused on the specific product in question, and based on the provided context or user reviews. 
+  Each question should be concise, focused on the specific product in question, and based on the answer given first, provided product information or user reviews (in this priority). 
   Verta the chatbot has no knowledge of other products, so avoid any comparisons. 
   
   The follow-up questions should be formatted as follows, with each question separated by '\n' in a single line:
