@@ -1,9 +1,8 @@
 .env
 .venv
-logs/
+logs
 **.pytest_cache
 cache
 verta-gcp.json
 **/__pycache__
 **/mlruns
-big_credentials.json
